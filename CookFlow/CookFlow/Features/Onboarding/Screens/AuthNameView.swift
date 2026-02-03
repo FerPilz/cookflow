@@ -31,4 +31,5 @@ struct AuthNameView: View {
 
 #Preview {
     AuthNameView(name: .constant(""), email: .constant(""), authProvider: .constant(""))
+    .preferredColorScheme(.dark)
 }

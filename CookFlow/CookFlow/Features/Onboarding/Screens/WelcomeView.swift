@@ -25,4 +25,6 @@ struct WelcomeView: View {
 
 #Preview {
     WelcomeView(authProvider: "")
+        .preferredColorScheme(.dark)
+    
 }

@@ -35,27 +35,38 @@ struct OnboardingFlowView: View {
             Text("Step \(stepIndex + 1) of \(OnboardingStep.allCases.count)")
                 .font(DesignSystem.Fonts.stepLabel)
                 .foregroundColor(DesignSystem.Colors.textMuted)
-                .frame(maxWidth: .infinity, alignment: .center)
+                .frame(maxWidth: .infinity, alignment: .bottom)
         }
     }
 
     private var headerView: some View {
         ZStack {
             AppLogoView()
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .frame(width: 400, height: 450)
+                .padding(.top,-60)
 
             VStack(spacing: DesignSystem.Spacing.xs) {
                 Spacer()
                 Text("CookFlow")
                     .font(DesignSystem.Fonts.appName)
                     .foregroundColor(DesignSystem.Colors.textCream)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity, alignment: .center)
+
                 Text("Onboarding")
                     .font(DesignSystem.Fonts.stepLabel)
                     .foregroundColor(DesignSystem.Colors.textMuted)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
             .padding(.bottom, DesignSystem.Spacing.md)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity) // ✅ THIS is the key
+
     }
+
+
+
 
     @ViewBuilder
     private var currentStepView: some View {
@@ -98,4 +109,5 @@ private enum OnboardingStep: Int, CaseIterable {
 
 #Preview {
     OnboardingFlowView()
+        .preferredColorScheme(.dark)
 }

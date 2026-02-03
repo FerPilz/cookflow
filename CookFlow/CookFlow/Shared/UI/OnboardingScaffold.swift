@@ -39,14 +39,14 @@ struct OnboardingScaffold<HeaderContent: View, BodyContent: View, FooterAboveCon
         GeometryReader { proxy in
             let height = proxy.size.height
             let width = proxy.size.width
-            let headerHeight = height * 0.25
-            let footerHeight = height * 0.25
+            let headerHeight = height * 0.20
+            let footerHeight = height * 0.15
 
             ZStack {
                 backgroundView
 
                 Color.black
-                    .opacity(0.65)
+                    .opacity(0.56)
                     .frame(height: headerHeight)
                     .frame(maxHeight: .infinity, alignment: .top)
 
@@ -74,29 +74,45 @@ struct OnboardingScaffold<HeaderContent: View, BodyContent: View, FooterAboveCon
             Image(uiImage: uiImage)
                 .resizable()
                 .scaledToFill()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom) // tweak
+                .clipped()
+                .ignoresSafeArea()
         } else {
             DesignSystem.Colors.backgroundNearBlack
+                .ignoresSafeArea()
         }
+        
+        
     }
+    
+    
 
     private func footerView(width: CGFloat, footerHeight: CGFloat) -> some View {
-        ZStack {
+        VStack(spacing: 12) {
+
+            // Above CTA (Back / sign-in links etc.)
             footerAboveCTAContent()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                .padding(.horizontal, DesignSystem.Spacing.lg)
+                .frame(maxWidth: .infinity, alignment: .top)
                 .padding(.top, DesignSystem.Spacing.md)
 
+            // CTA button (no .position)
             PrimaryButton(title: primaryCTATitle, isEnabled: isPrimaryEnabled, action: onPrimaryCTA)
-                .padding(.horizontal, DesignSystem.Spacing.lg)
-                .position(x: width / 2, y: footerHeight * 0.28)
+                .padding(.top, 4)
 
+            // Below CTA (Step 1 of 4)
             footerBelowCTAContent()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
-                .padding(.horizontal, DesignSystem.Spacing.lg)
-                .padding(.bottom, DesignSystem.Spacing.md)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, 6)
+
         }
+        .padding(.horizontal, DesignSystem.Spacing.lg)
+        .padding(.bottom, DesignSystem.Spacing.md)
+        .frame(height: footerHeight, alignment: .top)
     }
-}
+
+        }
+
+
 
 extension OnboardingScaffold where FooterAboveContent == EmptyView {
     init(

@@ -23,4 +23,5 @@ struct IntroView: View {
 
 #Preview {
     IntroView()
+        .preferredColorScheme(.dark)
 }

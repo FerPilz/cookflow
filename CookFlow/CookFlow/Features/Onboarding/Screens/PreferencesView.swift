@@ -31,4 +31,5 @@ struct PreferencesView: View {
 
 #Preview {
     PreferencesView(selectedPreferences: .constant([]), optimizationGoal: .constant(""))
+        .preferredColorScheme(.dark)
 }

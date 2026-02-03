@@ -29,11 +29,11 @@ enum DesignSystem {
     }
 
     enum Fonts {
-        static let appName = Font.system(size: 28, weight: .semibold)
+        static let appName = Font.system(size: 32, weight: .semibold)
         static let screenTitle = Font.system(size: 24, weight: .semibold)
-        static let body = Font.system(size: 16, weight: .regular)
-        static let stepLabel = Font.system(size: 13, weight: .medium)
-        static let buttonLabel = Font.system(size: 17, weight: .semibold)
+        static let body = Font.system(size: 20, weight: .regular)
+        static let stepLabel = Font.system(size: 15, weight: .medium)
+        static let buttonLabel = Font.system(size: 20, weight: .semibold)
         static let linkText = Font.system(size: 15, weight: .medium)
     }
 }
