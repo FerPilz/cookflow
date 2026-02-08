@@ -14,6 +14,7 @@ enum DesignSystem {
         static let textMuted = Color(hex: 0xCFC8BC)
         static let card = Color(hex: 0x141416)
         static let divider = Color(hex: 0x242428)
+        static let ctaGreen = Color(hex: 0x2CCB6F)
     }
 
     enum Spacing {
@@ -29,11 +30,15 @@ enum DesignSystem {
     }
 
     enum Fonts {
-        static let appName = Font.system(size: 32, weight: .semibold)
+        static let appName = Font.system(size: 28, weight: .semibold)
+        static let heroTitle = Font.system(size: 36, weight: .semibold)
         static let screenTitle = Font.system(size: 24, weight: .semibold)
         static let body = Font.system(size: 20, weight: .regular)
-        static let stepLabel = Font.system(size: 15, weight: .medium)
+        static let subtitle = Font.system(size: 16, weight: .regular)
+        static let valueProp = Font.system(size: 13, weight: .medium)
+        static let stepLabel = Font.system(size: 13, weight: .medium)
         static let buttonLabel = Font.system(size: 20, weight: .semibold)
+        static let link = Font.system(size: 15, weight: .medium)
         static let linkText = Font.system(size: 15, weight: .medium)
     }
 }

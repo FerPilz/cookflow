@@ -38,9 +38,9 @@ struct OnboardingScaffold<HeaderContent: View, BodyContent: View, FooterAboveCon
     var body: some View {
         GeometryReader { proxy in
             let height = proxy.size.height
-            let width = proxy.size.width
-            let headerHeight = height * 0.20
-            let footerHeight = height * 0.15
+            let headerHeight = height * 0.25
+            let footerHeight = height * 0.22
+            let safeAreaBottom = proxy.safeAreaInsets.bottom
 
             ZStack {
                 backgroundView
@@ -59,7 +59,7 @@ struct OnboardingScaffold<HeaderContent: View, BodyContent: View, FooterAboveCon
                         .frame(height: height - headerHeight - footerHeight)
                         .frame(maxWidth: .infinity)
 
-                    footerView(width: width, footerHeight: footerHeight)
+                    footerView(footerHeight: footerHeight, safeAreaBottom: safeAreaBottom)
                         .frame(height: footerHeight)
                         .frame(maxWidth: .infinity)
                 }
@@ -74,7 +74,7 @@ struct OnboardingScaffold<HeaderContent: View, BodyContent: View, FooterAboveCon
             Image(uiImage: uiImage)
                 .resizable()
                 .scaledToFill()
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom) // tweak
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 .clipped()
                 .ignoresSafeArea()
         } else {
@@ -87,30 +87,26 @@ struct OnboardingScaffold<HeaderContent: View, BodyContent: View, FooterAboveCon
     
     
 
-    private func footerView(width: CGFloat, footerHeight: CGFloat) -> some View {
-        VStack(spacing: 12) {
-
-            // Above CTA (Back / sign-in links etc.)
+    private func footerView(footerHeight: CGFloat, safeAreaBottom: CGFloat) -> some View {
+        VStack(spacing: DesignSystem.Spacing.sm) {
             footerAboveCTAContent()
                 .frame(maxWidth: .infinity, alignment: .top)
-                .padding(.top, DesignSystem.Spacing.md)
 
-            // CTA button (no .position)
+            Spacer(minLength: 0)
+
             PrimaryButton(title: primaryCTATitle, isEnabled: isPrimaryEnabled, action: onPrimaryCTA)
-                .padding(.top, 4)
+                .frame(height: 56)
 
-            // Below CTA (Step 1 of 4)
             footerBelowCTAContent()
                 .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.top, 6)
-
         }
         .padding(.horizontal, DesignSystem.Spacing.lg)
-        .padding(.bottom, DesignSystem.Spacing.md)
+        .padding(.top, DesignSystem.Spacing.sm)
+        .padding(.bottom, max(DesignSystem.Spacing.md, safeAreaBottom))
         .frame(height: footerHeight, alignment: .top)
     }
 
-        }
+    }
 
 
 

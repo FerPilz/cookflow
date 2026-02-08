@@ -9,25 +9,27 @@ import SwiftUI
 import UIKit
 
 struct AppLogoView: View {
+    let size: CGFloat
+
+    init(size: CGFloat = 140) {
+        self.size = size
+    }
+
     var body: some View {
-        GeometryReader { proxy in
-            let size = min(proxy.size.height * 0.70, proxy.size.width * 0.28)
-            ZStack {
-                if let uiImage = UIImage(named: "AppLogo") {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFit()
-                } else {
-                    Circle()
-                        .fill(DesignSystem.Colors.card)
-                    Text("CF")
-                        .font(DesignSystem.Fonts.appName)
-                        .foregroundColor(DesignSystem.Colors.textCream)
-                }
+        ZStack {
+            if UIImage(named: "AppLogo") != nil {
+                Image("AppLogo")
+                    .resizable()
+                    .scaledToFit()
+            } else {
+                Circle()
+                    .fill(DesignSystem.Colors.card)
+                Text("CF")
+                    .font(DesignSystem.Fonts.appName)
+                    .foregroundColor(DesignSystem.Colors.textCream)
             }
-            .frame(width: size, height: size)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
+        .frame(width: size, height: size)
         .accessibilityLabel("CookFlow")
     }
 }
@@ -36,6 +38,5 @@ struct AppLogoView: View {
     ZStack {
         DesignSystem.Colors.backgroundNearBlack
         AppLogoView()
-            .frame(height: 220)
     }
 }

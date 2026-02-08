@@ -12,8 +12,12 @@
 ## Folder constraints
 - Swift files ONLY in:
   - Shared/UI/
+  - Shared/Purchases/
+  - Shared/Models/
   - Features/Onboarding/
   - Features/Onboarding/Screens/
+  - Features/Main/
+  - Features/Home/
 - JSON ONLY in:
   - Seed/
 - No duplicate nesting like Features/Features or Shared/Shared.

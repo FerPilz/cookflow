@@ -6,18 +6,35 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct IntroView: View {
     var body: some View {
-        VStack(spacing: DesignSystem.Spacing.md) {
-            Text("Welcome to CookFlow")
-                .font(DesignSystem.Fonts.screenTitle)
-                .foregroundColor(DesignSystem.Colors.textCream)
-            Text("This is a placeholder screen for step 1.")
-                .font(DesignSystem.Fonts.body)
-                .foregroundColor(DesignSystem.Colors.textMuted)
+        let proteinSymbol = UIImage(systemName: "figure.strengthtraining.traditional") != nil
+            ? "figure.strengthtraining.traditional"
+            : "dumbbell"
+
+        VStack(spacing: DesignSystem.Spacing.lg) {
+            VStack(spacing: DesignSystem.Spacing.sm) {
+                Text("CookFlow")
+                    .font(DesignSystem.Fonts.heroTitle)
+                    .foregroundColor(DesignSystem.Colors.textCream)
+                    .multilineTextAlignment(.center)
+
+                Text("Recipes tailored to your goals in 30 seconds.")
+                    .font(DesignSystem.Fonts.subtitle)
+                    .foregroundColor(DesignSystem.Colors.textMuted)
+                    .multilineTextAlignment(.center)
+            }
+
+            HStack(spacing: DesignSystem.Spacing.lg) {
+                ValuePropItem(systemName: "person.crop.circle.badge.checkmark", title: "Personalized picks")
+                ValuePropItem(systemName: proteinSymbol, title: "Protein & nutrition")
+                ValuePropItem(systemName: "calendar", title: "Fast meal planning")
+            }
         }
-        .padding(.horizontal, DesignSystem.Spacing.xl)
+        .padding(.horizontal, DesignSystem.Spacing.lg)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
     }
 }
 

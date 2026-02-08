@@ -26,7 +26,7 @@ struct PrimaryButton: View {
                 .frame(maxWidth: .infinity)
                 .frame(height: 56)
         }
-        .background(isEnabled ? Color.accentColor : DesignSystem.Colors.divider)
+        .background(isEnabled ? DesignSystem.Colors.ctaGreen : DesignSystem.Colors.divider)
         .cornerRadius(DesignSystem.Radius.standard)
         .disabled(!isEnabled)
     }
