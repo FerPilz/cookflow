@@ -20,11 +20,17 @@ struct SearchBar: View {
         HStack(spacing: DesignSystem.Spacing.sm) {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(DesignSystem.Colors.textMuted)
+                .foregroundColor(DesignSystem.Colors.textCream.opacity(0.72))
 
-            TextField(placeholder, text: $text)
+            TextField(
+                "",
+                text: $text,
+                prompt: Text(placeholder)
+                    .foregroundColor(DesignSystem.Colors.textCream.opacity(0.72))
+            )
                 .font(DesignSystem.Fonts.subtitle)
-                .foregroundColor(DesignSystem.Colors.textCream)
+                .foregroundColor(.white)
+                .tint(.white)
                 .textInputAutocapitalization(.never)
                 .disableAutocorrection(true)
 
@@ -32,7 +38,7 @@ struct SearchBar: View {
                 Button(action: { text = "" }) {
                     Image(systemName: "xmark.circle.fill")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(DesignSystem.Colors.textMuted)
+                        .foregroundColor(DesignSystem.Colors.textCream.opacity(0.72))
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Clear search")
@@ -44,7 +50,7 @@ struct SearchBar: View {
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous)
-                .stroke(DesignSystem.Colors.divider, lineWidth: 1)
+                .stroke(DesignSystem.Colors.textCream.opacity(0.12), lineWidth: 1)
         )
     }
 }

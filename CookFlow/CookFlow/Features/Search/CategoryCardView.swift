@@ -9,37 +9,41 @@ import SwiftUI
 
 struct CategoryCardView: View {
     let category: Category
+    let thumbnailImageName: String?
 
     var body: some View {
-        Button(action: {}) {
-            VStack(spacing: DesignSystem.Spacing.xs) {
-                Image(systemName: category.systemImageName)
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundColor(DesignSystem.Colors.textCream)
-
-                Text(category.title)
-                    .font(DesignSystem.Fonts.valueProp)
-                    .foregroundColor(DesignSystem.Colors.textCream)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(2)
-            }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, DesignSystem.Spacing.sm)
-            .padding(.horizontal, DesignSystem.Spacing.xs)
-            .background(DesignSystem.Colors.card)
-            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous))
-            .overlay(
-                RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous)
-                    .stroke(DesignSystem.Colors.divider, lineWidth: 1)
+        VStack(alignment: .center, spacing: 10) {
+            CategoryThumbnailView(
+                imageName: thumbnailImageName,
+                size: 85,
+                systemImageName: category.mappedSymbolName,
+                presentation: .circle
             )
+                .frame(maxWidth: .infinity, alignment: .center)
+
+            Text(displayTitle)
+                .font(.system(size: 14, weight: .medium))
+                .foregroundColor(DesignSystem.Colors.textCream)
+                .multilineTextAlignment(.center)
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
+                .allowsTightening(true)
+                .frame(maxWidth: .infinity, alignment: .center)
         }
-        .buttonStyle(.plain)
-        .accessibilityLabel(category.title)
+        .padding(.horizontal, DesignSystem.Spacing.xs)
+        .padding(.vertical, 10)
+        .contentShape(Rectangle())
+        .frame(maxWidth: .infinity)
+        .accessibilityLabel(displayTitle)
+    }
+
+    private var displayTitle: String {
+        category.title == "Drinks" ? "Cocktails" : category.title
     }
 }
 
 #Preview {
-    CategoryCardView(category: Category(title: "Breakfast", systemImageName: "sunrise.fill"))
+    CategoryCardView(category: Category(title: "Breakfast", systemImageName: "sunrise.fill"), thumbnailImageName: nil)
         .padding()
         .background(DesignSystem.Colors.backgroundNearBlack)
         .preferredColorScheme(.dark)

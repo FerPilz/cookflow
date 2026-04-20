@@ -9,32 +9,18 @@ import SwiftUI
 import UIKit
 
 struct IntroView: View {
+    private var versionLabel: String {
+        "CookFlow 1.0"
+    }
+
     var body: some View {
-        let proteinSymbol = UIImage(systemName: "figure.strengthtraining.traditional") != nil
-            ? "figure.strengthtraining.traditional"
-            : "dumbbell"
-
-        VStack(spacing: DesignSystem.Spacing.lg) {
-            VStack(spacing: DesignSystem.Spacing.sm) {
-                Text("CookFlow")
-                    .font(DesignSystem.Fonts.heroTitle)
-                    .foregroundColor(DesignSystem.Colors.textCream)
-                    .multilineTextAlignment(.center)
-
-                Text("Recipes tailored to your goals in 30 seconds.")
-                    .font(DesignSystem.Fonts.subtitle)
-                    .foregroundColor(DesignSystem.Colors.textMuted)
-                    .multilineTextAlignment(.center)
-            }
-
-            HStack(spacing: DesignSystem.Spacing.lg) {
-                ValuePropItem(systemName: "person.crop.circle.badge.checkmark", title: "Personalized picks")
-                ValuePropItem(systemName: proteinSymbol, title: "Protein & nutrition")
-                ValuePropItem(systemName: "calendar", title: "Fast meal planning")
-            }
+        ZStack(alignment: .top) {
+            Text(versionLabel)
+                .font(DesignSystem.Fonts.screenTitle)
+                .foregroundColor(DesignSystem.Colors.textCream)
+                .padding(.top, DesignSystem.Spacing.lg)
+                .frame(maxWidth: .infinity, alignment: .center)
         }
-        .padding(.horizontal, DesignSystem.Spacing.lg)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
     }
 }
 

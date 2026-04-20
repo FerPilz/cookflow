@@ -8,131 +8,165 @@
 import SwiftUI
 
 struct MenuView: View {
+    @EnvironmentObject private var themeManager: ThemeManager
     @Binding var isPresented: Bool
     @Binding var selectedTab: AppTab
-    @State private var showPaywall = false
+    let onTapProfile: () -> Void
+
+    @State private var activeUtilitySheet: UtilitySheet?
+
+    init(
+        isPresented: Binding<Bool>,
+        selectedTab: Binding<AppTab>,
+        onTapProfile: @escaping () -> Void = {}
+    ) {
+        _isPresented = isPresented
+        _selectedTab = selectedTab
+        self.onTapProfile = onTapProfile
+    }
 
     var body: some View {
-        NavigationStack {
-            List {
-                Section("Navigate") {
-                    menuButton(title: "Home", systemImage: "house") {
-                        selectedTab = .home
-                        isPresented = false
-                    }
-                    menuButton(title: "Search", systemImage: "magnifyingglass") {
-                        selectedTab = .search
-                        isPresented = false
-                    }
-                    menuButton(title: "Planner", systemImage: "calendar") {
-                        selectedTab = .planner
-                        isPresented = false
-                    }
-                    menuButton(title: "Favorites", systemImage: "heart") {
-                        selectedTab = .favorites
-                        isPresented = false
-                    }
+        let colors = themeManager.palette
+
+        VStack(alignment: .leading, spacing: 0) {
+            HStack {
+                Text("Menu")
+                    .font(.system(size: 24, weight: .semibold))
+                    .foregroundColor(colors.primaryText)
+
+                Spacer()
+
+                Button(action: dismissMenu) {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(colors.primaryText)
+                        .frame(width: 36, height: 36)
+                        .background(colors.cardBackground)
+                        .clipShape(Circle())
                 }
-
-                Section("Monetization") {
-                    Button(action: { showPaywall = true }) {
-                        menuRow(title: "Upgrade to Premium", systemImage: "crown")
-                    }
-                    Button(action: {}) {
-                        menuRow(title: "Restore Purchases", systemImage: "arrow.counterclockwise")
-                    }
-                }
-
-                Section("Utility") {
-                    NavigationLink {
-                        PlaceholderDetailView(title: "Settings")
-                    } label: {
-                        menuRow(title: "Settings", systemImage: "gearshape")
-                    }
-
-                    NavigationLink {
-                        PlaceholderDetailView(title: "Help / Feedback")
-                    } label: {
-                        menuRow(title: "Help / Feedback", systemImage: "questionmark.circle")
-                    }
-
-                    NavigationLink {
-                        PlaceholderDetailView(title: "Terms & Privacy")
-                    } label: {
-                        menuRow(title: "Terms & Privacy", systemImage: "doc.text")
-                    }
-                }
-
-                Section("Account") {
-                    NavigationLink {
-                        PlaceholderDetailView(title: "Sign out")
-                    } label: {
-                        menuRow(title: "Sign out", systemImage: "arrow.backward.square")
-                    }
-                }
+                .buttonStyle(.plain)
             }
-            .listStyle(.insetGrouped)
-            .scrollContentBackground(.hidden)
-            .background(DesignSystem.Colors.backgroundNearBlack)
-            .navigationTitle("Menu")
+            .padding(.horizontal, DesignSystem.Spacing.md)
+            .padding(.top, 56)
+            .padding(.bottom, DesignSystem.Spacing.lg)
+
+            VStack(alignment: .leading, spacing: 8) {
+                menuButton(title: "Profile", systemImage: "person.crop.circle", action: {
+                    dismissMenu()
+                    onTapProfile()
+                })
+                menuButton(title: "Favorites", systemImage: "heart", action: {
+                    selectedTab = .favorites
+                    dismissMenu()
+                })
+                menuButton(title: "Premium", systemImage: "crown", action: {
+                    dismissMenu()
+                })
+                menuButton(title: "Settings", systemImage: "gearshape", action: {
+                    activeUtilitySheet = .settings
+                })
+                menuButton(title: "Help / Support", systemImage: "questionmark.circle", action: {
+                    activeUtilitySheet = .help
+                })
+            }
+            .padding(.horizontal, DesignSystem.Spacing.sm)
+
+            Spacer()
+        }
+        .frame(maxHeight: .infinity, alignment: .top)
+        .background(colors.secondaryBackground)
+        .sheet(item: $activeUtilitySheet, onDismiss: dismissMenu) { sheet in
+            UtilitySheetView(title: sheet.title)
+        }
+    }
+
+    @ViewBuilder
+    private func menuButton(title: String, systemImage: String, action: @escaping () -> Void) -> some View {
+        let colors = themeManager.palette
+
+        Button(action: action) {
+            HStack(spacing: DesignSystem.Spacing.sm) {
+                Image(systemName: systemImage)
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(colors.primaryText)
+                    .frame(width: 22)
+
+                Text(title)
+                    .font(DesignSystem.Fonts.subtitle)
+                    .foregroundColor(colors.primaryText)
+
+                Spacer()
+            }
+            .padding(.horizontal, DesignSystem.Spacing.sm)
+            .padding(.vertical, 12)
+            .background(colors.cardBackground)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func dismissMenu() {
+        withAnimation(.easeInOut(duration: 0.22)) {
+            isPresented = false
+        }
+    }
+}
+
+private enum UtilitySheet: String, Identifiable {
+    case settings
+    case help
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .settings:
+            return "Settings"
+        case .help:
+            return "Help / Support"
+        }
+    }
+}
+
+private struct UtilitySheetView: View {
+    @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var themeManager: ThemeManager
+    let title: String
+
+    var body: some View {
+        let colors = themeManager.palette
+
+        NavigationStack {
+            ZStack {
+                colors.background
+                    .ignoresSafeArea()
+
+                Text("Coming soon")
+                    .font(DesignSystem.Fonts.subtitle)
+                    .foregroundColor(colors.secondaryText)
+            }
+            .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
-                        isPresented = false
+                        dismiss()
                     }
-                    .foregroundColor(DesignSystem.Colors.textCream)
+                    .foregroundColor(colors.primaryText)
                 }
             }
         }
-        .tint(DesignSystem.Colors.textCream)
-        .sheet(isPresented: $showPaywall) {
-            PaywallView()
-        }
-    }
-
-    private func menuButton(title: String, systemImage: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            menuRow(title: title, systemImage: systemImage)
-        }
-    }
-
-    private func menuRow(title: String, systemImage: String) -> some View {
-        HStack(spacing: DesignSystem.Spacing.md) {
-            Image(systemName: systemImage)
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(DesignSystem.Colors.textCream)
-                .frame(width: 22)
-
-            Text(title)
-                .font(DesignSystem.Fonts.subtitle)
-                .foregroundColor(DesignSystem.Colors.textCream)
-
-            Spacer()
-        }
-        .padding(.vertical, 6)
-        .listRowBackground(DesignSystem.Colors.card)
     }
 }
 
-private struct PlaceholderDetailView: View {
-    let title: String
-
-    var body: some View {
-        ZStack {
-            DesignSystem.Colors.backgroundNearBlack
-                .ignoresSafeArea()
-
-            Text("Coming soon")
-                .font(DesignSystem.Fonts.subtitle)
-                .foregroundColor(DesignSystem.Colors.textMuted)
-        }
-        .navigationTitle(title)
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
-
-#Preview {
+#Preview("Light Mode") {
     MenuView(isPresented: .constant(true), selectedTab: .constant(.home))
-        .preferredColorScheme(.dark)
+        .environmentObject(ThemeManager(theme: .light))
+        .environment(\.colorScheme, .light)
+}
+
+#Preview("Dark Mode") {
+    MenuView(isPresented: .constant(true), selectedTab: .constant(.home))
+        .environmentObject(ThemeManager(theme: .dark))
+        .environment(\.colorScheme, .dark)
 }

@@ -8,181 +8,219 @@
 import SwiftUI
 
 struct HomeView: View {
+    private static let fallbackHeroRecipeIDs = [
+        "pro_001_chicken_chorizo_jambalaya_a",
+        "brk_001_good_old_fashioned_pancakes_b",
+        "hlt_001_marry_me_white_bean_soup_kale_b",
+        "mlp_001_chicken_burrito_bowls_c",
+        "dte_001_filet_mignon_red_wine_pan_sauce_a",
+    ]
+
     @EnvironmentObject private var favoritesStore: FavoritesStore
-    @AppStorage("homeSelectedCategory") private var homeSelectedCategory = ""
-    @State private var selectedCarouselIndex = 0
+    @EnvironmentObject private var themeManager: ThemeManager
+    @AppStorage("recentlyViewedRecipeIDs") private var recentlyViewedRecipeIDs = ""
+    @StateObject private var userRecipesStore = UserRecipesStore()
+    @State private var activeCategoryTitle = "Featured"
+    private let stickyHeaderBaseHeight: CGFloat = HomeStickyHeaderView.baseHeight
+    private let sectionScrollRevealPadding: CGFloat = HomeStickyHeaderView.baseHeight + DesignSystem.Spacing.md
 
     var body: some View {
-        ScrollViewReader { proxy in
-            ScrollView {
-                VStack(alignment: .leading, spacing: DesignSystem.Spacing.lg) {
-                    topCarouselSection
+        let colors = themeManager.palette
 
-                    categoryStrip(proxy: proxy)
+        GeometryReader { geometry in
+            let stickyHeaderHeight = stickyHeaderBaseHeight + geometry.safeAreaInsets.top
 
-                    ForEach(sectionTitles, id: \.self) { title in
-                        HomeSectionView(
-                            title: title,
-                            recipes: SampleData.recipes(for: title),
-                            favoriteIDs: favoritesStore.favoriteIDs,
-                            onToggleFavorite: { favoritesStore.toggle($0) }
-                        )
-                        .id(title)
-                    }
-                }
-                .padding(.horizontal, DesignSystem.Spacing.lg)
-                .padding(.top, DesignSystem.Spacing.md)
-                .padding(.bottom, 96)
-            }
-        }
-    }
+            ScrollViewReader { proxy in
+                ZStack(alignment: .top) {
+                    colors.background
+                        .ignoresSafeArea()
 
-    private var sectionTitles: [String] {
-        SampleData.sectionOrder.filter { $0 != "Top Picks for You" }
-    }
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
+                            Color.clear
+                                .frame(height: stickyHeaderHeight - 4)
 
-    private var topCarouselSection: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
-            Text("Top Picks for You")
-                .font(.system(size: 18, weight: .semibold))
-                .foregroundColor(DesignSystem.Colors.textCream)
+                            HomeHeroView(
+                                title: "Featured",
+                                recipes: heroRecipes,
+                                favoriteIDs: favoritesStore.favoriteIDs,
+                                onToggleFavorite: { favoritesStore.toggle(id: $0.id) },
+                                onSelectRecipe: recordRecentlyViewed
+                            )
+                            .id("hero")
+                            .overlay(alignment: .top) {
+                                sectionScrollAnchor(for: "Featured")
+                            }
+                            .background(sectionOffsetReader(title: "Featured"))
 
-            TabView(selection: $selectedCarouselIndex) {
-                ForEach(Array(SampleData.recipes(for: "Top Picks for You").enumerated()), id: \.offset) { index, recipe in
-                    ZStack(alignment: .topTrailing) {
-                        RecipeImageView(recipe: recipe)
-                            .frame(height: 216)
-                            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous))
+                            ForEach(secondaryHomeSectionTitles, id: \.self) { title in
+                                let recipes = SampleData.recipes(forHomeSectionTitle: title, userRecipes: userRecipesStore.recipes)
+                                if !recipes.isEmpty {
+                                    HomeSectionView(
+                                        title: title,
+                                        recipes: recipes,
+                                        favoriteIDs: favoritesStore.favoriteIDs,
+                                        onToggleFavorite: { favoritesStore.toggle(id: $0.id) },
+                                        onSelectRecipe: recordRecentlyViewed
+                                    )
+                                    .id(sectionID(for: title))
+                                    .overlay(alignment: .top) {
+                                        sectionScrollAnchor(for: title)
+                                    }
+                                    .background(sectionOffsetReader(title: title))
+                                }
+                            }
 
-                        Button(action: { favoritesStore.toggle(recipe) }) {
-                            Image(systemName: favoritesStore.isFavorite(recipe.id) ? "heart.fill" : "heart")
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundColor(DesignSystem.Colors.textCream)
-                                .frame(width: 44, height: 44)
-                                .background(Color.black.opacity(0.35))
-                                .clipShape(Circle())
+                            if !recentlyViewedRecipes.isEmpty {
+                                HomeSectionView(
+                                    title: "Continue Cooking",
+                                    recipes: recentlyViewedRecipes,
+                                    favoriteIDs: favoritesStore.favoriteIDs,
+                                    onToggleFavorite: { favoritesStore.toggle(id: $0.id) },
+                                    onSelectRecipe: recordRecentlyViewed
+                                )
+                                .id("continue-cooking")
+                                .background(sectionOffsetReader(title: "Continue Cooking"))
+                            }
                         }
-                        .buttonStyle(.plain)
-                        .padding(8)
+                        .padding(.horizontal, DesignSystem.Spacing.lg)
+                        .padding(.bottom, 96)
                     }
-                    .tag(index)
-                }
-            }
-            .frame(height: 216)
-            .tabViewStyle(.page(indexDisplayMode: .never))
-            .onChange(of: carouselCount) { newValue in
-                if newValue > 0, selectedCarouselIndex >= newValue {
-                    selectedCarouselIndex = max(0, newValue - 1)
-                }
-            }
+                    .coordinateSpace(name: "home-scroll")
+                    .onPreferenceChange(HomeSectionOffsetPreferenceKey.self) { offsets in
+                        updateActiveCategory(from: offsets, stickyHeaderHeight: stickyHeaderHeight)
+                    }
 
-            HStack(spacing: 6) {
-                ForEach(0..<carouselCount, id: \.self) { index in
-                    Circle()
-                        .fill(index == selectedCarouselIndex ? DesignSystem.Colors.textCream : DesignSystem.Colors.textMuted)
-                        .frame(width: 6, height: 6)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .center)
-
-            if let recipe = carouselRecipe {
-                Text(recipe.title)
-                    .font(DesignSystem.Fonts.screenTitle)
-                    .foregroundColor(DesignSystem.Colors.textCream)
-                    .lineLimit(2)
-
-                Text(recipe.subtitle)
-                    .font(DesignSystem.Fonts.subtitle)
-                    .foregroundColor(DesignSystem.Colors.textMuted)
-                    .lineLimit(1)
-            }
-        }
-    }
-
-    private func categoryStrip(proxy: ScrollViewProxy) -> some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: DesignSystem.Spacing.sm) {
-                ForEach(SampleData.categories) { category in
-                    let isSelected = homeSelectedCategory == category.title
-                    Button(action: {
-                        homeSelectedCategory = category.title
-                        withAnimation(.easeInOut) {
-                            proxy.scrollTo(category.title, anchor: .top)
+                    HomeStickyHeaderView(
+                        topInset: geometry.safeAreaInsets.top,
+                        categories: homeCategories,
+                        selectedCategoryTitle: activeCategoryTitle,
+                        onSelectCategory: { category in
+                            activeCategoryTitle = category.title
+                            withAnimation(.easeInOut(duration: 0.22)) {
+                                proxy.scrollTo(sectionAnchorID(for: category.title), anchor: .top)
+                            }
                         }
-                    }) {
-                        VStack(spacing: 6) {
-                            Image(systemName: category.systemImageName)
-                                .font(.system(size: 18, weight: .semibold))
-                                .foregroundColor(DesignSystem.Colors.textCream)
-                                .frame(width: 36, height: 36)
-                                .background(DesignSystem.Colors.card)
-                                .clipShape(Circle())
-
-                            Text(category.title)
-                                .font(DesignSystem.Fonts.valueProp)
-                                .foregroundColor(DesignSystem.Colors.textCream)
-                                .lineLimit(1)
-                        }
-                        .frame(width: 88)
-                        .padding(.vertical, DesignSystem.Spacing.xs)
-                        .background(isSelected ? DesignSystem.Colors.ctaGreen.opacity(0.25) : DesignSystem.Colors.card.opacity(0.6))
-                        .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .stroke(isSelected ? DesignSystem.Colors.ctaGreen : Color.clear, lineWidth: 1)
-                        )
-                    }
-                    .buttonStyle(.plain)
+                    )
                 }
             }
         }
+        .background(colors.background)
+        .ignoresSafeArea()
     }
 
-    private var carouselRecipes: [Recipe] {
-        SampleData.recipes(for: "Top Picks for You")
+    private var homeSectionTitles: [String] {
+        homeCategories.map(\.title)
     }
 
-    private var carouselCount: Int {
-        carouselRecipes.count
+    private var secondaryHomeSectionTitles: [String] {
+        homeSectionTitles.filter { $0 != "Featured" }
     }
 
-    private var carouselRecipe: Recipe? {
-        guard !carouselRecipes.isEmpty, selectedCarouselIndex < carouselRecipes.count else { return nil }
-        return carouselRecipes[selectedCarouselIndex]
+    private var homeCategories: [Category] {
+        SampleData.homeCategories()
     }
-}
 
-private struct RecipeImageView: View {
-    let recipe: Recipe
-
-    var body: some View {
-        ZStack {
-            if let url = recipe.imageURL {
-                AsyncImage(url: url) { phase in
-                    if let image = phase.image {
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    } else {
-                        placeholder
-                    }
-                }
-            } else {
-                placeholder
-            }
+    private var heroRecipes: [Recipe] {
+        let recipes = SampleData.recipes(forHomeSectionTitle: "Featured", userRecipes: userRecipesStore.recipes)
+        if !recipes.isEmpty {
+            return Array(recipes.prefix(5))
         }
-    }
 
-    private var placeholder: some View {
-        LinearGradient(
-            colors: [DesignSystem.Colors.card, DesignSystem.Colors.backgroundNearBlack],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
+        let firstSectionRecipes = SampleData.recipes(
+            forHomeSectionTitle: "Featured",
+            userRecipes: userRecipesStore.recipes
         )
+        if !firstSectionRecipes.isEmpty {
+            return Array(firstSectionRecipes.prefix(5))
+        }
+
+        return Self.fallbackHeroRecipeIDs.compactMap { id in
+            SampleData.allRecipes.first(where: { $0.id == id })
+        }
+    }
+
+    private var recentlyViewedRecipes: [Recipe] {
+        let ids = recentlyViewedRecipeIDs
+            .split(separator: ",")
+            .map(String.init)
+
+        let recipes = ids.compactMap { id in
+            SampleData.allRecipes.first(where: { $0.id == id })
+        }
+
+        return Array(recipes.prefix(5))
+    }
+
+    private func sectionID(for title: String) -> String {
+        return Category(title: title, systemImageName: "circle.fill").slug
+    }
+
+    private func sectionAnchorID(for title: String) -> String {
+        "\(sectionID(for: title))-anchor"
+    }
+
+    private func recordRecentlyViewed(_ recipe: Recipe) {
+        var ids = recentlyViewedRecipeIDs
+            .split(separator: ",")
+            .map(String.init)
+
+        ids.removeAll { $0 == recipe.id }
+        ids.insert(recipe.id, at: 0)
+        recentlyViewedRecipeIDs = Array(ids.prefix(8)).joined(separator: ",")
+    }
+
+    private func sectionOffsetReader(title: String) -> some View {
+        GeometryReader { geometry in
+            Color.clear
+                .preference(
+                    key: HomeSectionOffsetPreferenceKey.self,
+                    value: [title: geometry.frame(in: .named("home-scroll")).minY]
+                )
+        }
+    }
+
+    private func sectionScrollAnchor(for title: String) -> some View {
+        Color.clear
+            .frame(height: 1)
+            .id(sectionAnchorID(for: title))
+            .offset(y: -sectionScrollRevealPadding)
+            .allowsHitTesting(false)
+            .accessibilityHidden(true)
+    }
+
+    private func updateActiveCategory(from offsets: [String: CGFloat], stickyHeaderHeight: CGFloat) {
+        let activationY = stickyHeaderHeight + 24
+        let categoryTitles = Set(homeCategories.map(\.title))
+        let relevantOffsets = offsets.filter { categoryTitles.contains($0.key) }
+
+        let currentTitle = relevantOffsets
+            .filter { $0.value <= activationY }
+            .max(by: { $0.value < $1.value })?
+            .key
+            ?? relevantOffsets.min(by: { $0.value < $1.value })?.key
+            ?? activeCategoryTitle
+
+        if currentTitle != activeCategoryTitle {
+            activeCategoryTitle = currentTitle
+        }
     }
 }
 
-#Preview {
-    HomeView()
-        .preferredColorScheme(.dark)
+#Preview("Light Mode") {
+    NavigationStack {
+        HomeView()
+            .environmentObject(FavoritesStore())
+            .environmentObject(ThemeManager(theme: .light))
+            .environment(\.colorScheme, .light)
+    }
+}
+
+#Preview("Dark Mode") {
+    NavigationStack {
+        HomeView()
+            .environmentObject(FavoritesStore())
+            .environmentObject(ThemeManager(theme: .dark))
+            .environment(\.colorScheme, .dark)
+    }
 }

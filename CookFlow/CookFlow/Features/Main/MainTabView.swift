@@ -8,9 +8,7 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @AppStorage("isPro") private var isPro = false
     @State private var selection: Tab = .home
-    @State private var showPaywall = false
 
     var body: some View {
         TabView(selection: $selection) {
@@ -38,14 +36,6 @@ struct MainTabView: View {
                 }
                 .tag(Tab.allRecipes)
         }
-        .onChange(of: selection) { newValue in
-            if newValue == .allRecipes && !isPro {
-                showPaywall = true
-            }
-        }
-        .sheet(isPresented: $showPaywall) {
-            PaywallView()
-        }
     }
 }
 
@@ -58,4 +48,9 @@ private enum Tab {
 
 #Preview {
     MainTabView()
+        .environmentObject(ThemeManager())
+        .environmentObject(FavoritesStore())
+        .environmentObject(CartStore())
+        .environmentObject(PlannerStore())
+        .environmentObject(ShoppingListStore())
 }

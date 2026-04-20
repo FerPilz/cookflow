@@ -18,7 +18,18 @@
   - Features/Onboarding/Screens/
   - Features/Main/
   - Features/Home/
-- JSON ONLY in:
+  - CookFlow/CookFlow/Shared/UI/
+  - CookFlow/CookFlow/Shared/Auth/
+  - CookFlow/CookFlow/Shared/Models/ (stores + models like CartStore, PlannerStore, Recipe types)
+  - CookFlow/CookFlow/Features/Onboarding/
+  - CookFlow/CookFlow/Features/Onboarding/Screens/
+  - CookFlow/CookFlow/Features/Home/
+  - CookFlow/CookFlow/Features/Search/
+  - CookFlow/CookFlow/Features/Planner/
+  - CookFlow/CookFlow/Features/Main/
+  - CookFlow/CookFlow/Features/Cart/ (if you add a dedicated Cart screen)
+  - CookFlow/CookFlow/Features/Menu/
+  - JSON ONLY in:
   - Seed/
 - No duplicate nesting like Features/Features or Shared/Shared.
 - Do NOT create Components.swift (one component per file).

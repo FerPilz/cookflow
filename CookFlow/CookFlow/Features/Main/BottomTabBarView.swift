@@ -25,7 +25,7 @@ enum AppTab: CaseIterable {
         case .favorites:
             return "Favorites"
         case .aiRecipes:
-            return "AI Recipes"
+            return "AI Kitchen"
         }
     }
 
@@ -46,12 +46,24 @@ enum AppTab: CaseIterable {
 }
 
 struct BottomTabBarView: View {
+    @EnvironmentObject private var themeManager: ThemeManager
     @Binding var selectedTab: AppTab
+    let onSelectTab: (AppTab) -> Void
+
+    init(
+        selectedTab: Binding<AppTab>,
+        onSelectTab: @escaping (AppTab) -> Void = { _ in }
+    ) {
+        _selectedTab = selectedTab
+        self.onSelectTab = onSelectTab
+    }
 
     var body: some View {
+        let colors = themeManager.palette
+
         VStack(spacing: 0) {
             Rectangle()
-                .fill(DesignSystem.Colors.divider)
+                .fill(colors.border)
                 .frame(height: 1)
 
             HStack {
@@ -61,14 +73,17 @@ struct BottomTabBarView: View {
             }
             .frame(height: 72)
             .padding(.horizontal, DesignSystem.Spacing.sm)
-            .background(DesignSystem.Colors.backgroundNearBlack)
+            .background(colors.tabBarBackground)
         }
     }
 
     private func tabButton(for tab: AppTab) -> some View {
+        let colors = themeManager.palette
         let isSelected = selectedTab == tab
-        let foreground = isSelected ? Color.accentColor : DesignSystem.Colors.textMuted
-        return Button(action: { selectedTab = tab }) {
+        let foreground = isSelected ? colors.accent : colors.secondaryText
+        return Button(action: {
+            onSelectTab(tab)
+        }) {
             VStack(spacing: 4) {
                 Image(systemName: tab.systemImage)
                     .font(.system(size: 18, weight: .semibold))
@@ -87,5 +102,5 @@ struct BottomTabBarView: View {
 
 #Preview {
     BottomTabBarView(selectedTab: .constant(.home))
-        .preferredColorScheme(.dark)
+        .environmentObject(ThemeManager())
 }

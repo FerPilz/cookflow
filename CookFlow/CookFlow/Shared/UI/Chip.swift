@@ -15,39 +15,67 @@ struct Chip: View {
     let onTap: () -> Void
 
     var body: some View {
-        let iconPrimary = DesignSystem.Colors.textCream
-
         Button(action: onTap) {
             HStack(spacing: DesignSystem.Spacing.xs) {
+                Image(systemName: systemIcon)
+                    .foregroundStyle(isSelected ? DesignSystem.Colors.backgroundNearBlack : tint)
+                    .font(.system(size: 16, weight: .semibold))
+                    .frame(width: 18, height: 18)
+                    .padding(7)
+                    .background(iconBackground)
+                    .clipShape(Circle())
+
                 Text(title)
                     .font(DesignSystem.Fonts.valueProp)
-                    .foregroundColor(DesignSystem.Colors.textCream)
+                    .foregroundColor(isSelected ? DesignSystem.Colors.backgroundNearBlack : DesignSystem.Colors.textCream)
                     .lineLimit(1)
-
-                Image(systemName: systemIcon)
-                    .foregroundStyle(iconPrimary)
-                    .font(.system(size: 16, weight: .semibold))
 
                 if isSelected {
                     Image(systemName: "checkmark")
                         .font(.system(size: 10, weight: .bold))
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(DesignSystem.Colors.backgroundNearBlack)
                         .padding(6)
-                        .background(DesignSystem.Colors.ctaGreen)
+                        .background(DesignSystem.Colors.selectorGreen.opacity(0.85))
                         .clipShape(Circle())
                 }
             }
             .padding(.vertical, 10)
             .padding(.horizontal, 12)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(isSelected ? DesignSystem.Colors.ctaGreen : DesignSystem.Colors.card)
+            .background(chipBackground)
             .overlay(
                 RoundedRectangle(cornerRadius: 14)
-                    .stroke(isSelected ? DesignSystem.Colors.ctaGreen.opacity(0.9) : DesignSystem.Colors.divider, lineWidth: 1)
+                    .strokeBorder(chipBorderColor, lineWidth: 1)
             )
             .cornerRadius(14)
         }
         .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
+    private var chipBackground: some View {
+        if isSelected {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(DesignSystem.Colors.selectorGreen)
+        } else {
+            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                .fill(DesignSystem.Gradients.selectorIdle)
+        }
+    }
+
+    @ViewBuilder
+    private var iconBackground: some View {
+        if isSelected {
+            Circle()
+                .fill(DesignSystem.Colors.selectorGreen.opacity(0.88))
+        } else {
+            Circle()
+                .fill(DesignSystem.Gradients.selectorIdleIcon)
+        }
+    }
+
+    private var chipBorderColor: Color {
+        isSelected ? DesignSystem.Colors.selectorGreen.opacity(0.95) : DesignSystem.Colors.selectorBlueHighlight.opacity(0.28)
     }
 }
 

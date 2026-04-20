@@ -22,10 +22,10 @@ struct AppLogoView: View {
                     .resizable()
                     .scaledToFit()
             } else {
-                Circle()
+                RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous)
                     .fill(DesignSystem.Colors.card)
-                Text("CF")
-                    .font(DesignSystem.Fonts.appName)
+                Image(systemName: "fork.knife")
+                    .font(.system(size: size * 0.32, weight: .semibold))
                     .foregroundColor(DesignSystem.Colors.textCream)
             }
         }

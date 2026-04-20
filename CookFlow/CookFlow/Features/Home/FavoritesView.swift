@@ -9,10 +9,13 @@ import SwiftUI
 
 struct FavoritesView: View {
     @EnvironmentObject private var favoritesStore: FavoritesStore
+    @EnvironmentObject private var themeManager: ThemeManager
 
     var body: some View {
+        let colors = themeManager.palette
+
         ZStack {
-            DesignSystem.Colors.backgroundNearBlack
+            colors.background
                 .ignoresSafeArea()
 
             ScrollView {
@@ -20,35 +23,54 @@ struct FavoritesView: View {
                     if favoritesStore.favoriteIDs.isEmpty {
                         Text("No favorites yet")
                             .font(DesignSystem.Fonts.subtitle)
-                            .foregroundColor(DesignSystem.Colors.textMuted)
+                            .foregroundColor(colors.secondaryText)
                     } else {
                         ForEach(sortedCategories, id: \.self) { category in
                             if let recipes = favoritesStore.favoritesByCategory[category] {
                                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
                                     Text(category)
                                         .font(.system(size: 20, weight: .semibold))
-                                        .foregroundColor(DesignSystem.Colors.textCream)
+                                        .foregroundColor(colors.primaryText)
 
                                     ForEach(recipes) { recipe in
-                                        HStack(spacing: DesignSystem.Spacing.sm) {
-                                            RecipeThumbView(recipe: recipe)
+                                        NavigationLink(destination: RecipeDetailView(recipe: recipe)) {
+                                            HStack(spacing: DesignSystem.Spacing.sm) {
+                                                RecipeThumbView(recipe: recipe)
 
-                                            VStack(alignment: .leading, spacing: 2) {
-                                                Text(recipe.title)
-                                                    .font(DesignSystem.Fonts.subtitle)
-                                                    .foregroundColor(DesignSystem.Colors.textCream)
+                                                VStack(alignment: .leading, spacing: 2) {
+                                                    Text(recipe.title)
+                                                        .font(DesignSystem.Fonts.subtitle)
+                                                        .foregroundColor(colors.primaryText)
 
-                                                Text(recipe.subtitle)
-                                                    .font(DesignSystem.Fonts.valueProp)
-                                                    .foregroundColor(DesignSystem.Colors.textMuted)
-                                                    .lineLimit(1)
+                                                    Text(recipe.subtitle)
+                                                        .font(DesignSystem.Fonts.valueProp)
+                                                        .foregroundColor(colors.secondaryText)
+                                                        .lineLimit(1)
+
+                                                    RecipeMetadataRow(
+                                                        recipe: recipe,
+                                                        iconColor: colors.accent,
+                                                        textColor: colors.secondaryText
+                                                    )
+                                                }
+
+                                                Spacer()
+
+                                                Button(action: { favoritesStore.toggle(id: recipe.id) }) {
+                                                    Image(systemName: favoritesStore.isFavorite(id: recipe.id) ? "heart.fill" : "heart")
+                                                        .font(.system(size: 14, weight: .semibold))
+                                                        .foregroundColor(colors.primaryText)
+                                                        .padding(8)
+                                                        .background(colors.secondaryBackground.opacity(0.9))
+                                                        .clipShape(Circle())
+                                                }
+                                                .buttonStyle(.plain)
                                             }
-
-                                            Spacer()
+                                            .padding(DesignSystem.Spacing.sm)
+                                            .background(colors.cardBackground)
+                                            .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous))
                                         }
-                                        .padding(DesignSystem.Spacing.sm)
-                                        .background(DesignSystem.Colors.card)
-                                        .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous))
+                                        .buttonStyle(.plain)
                                     }
                                 }
                             }
@@ -71,36 +93,22 @@ private struct RecipeThumbView: View {
     let recipe: Recipe
 
     var body: some View {
-        ZStack {
-            if let url = recipe.imageURL {
-                AsyncImage(url: url) { phase in
-                    if let image = phase.image {
-                        image
-                            .resizable()
-                            .scaledToFill()
-                    } else {
-                        placeholder
-                    }
-                }
-            } else {
-                placeholder
-            }
-        }
+        HeroImageView(imageName: recipe.heroImageName)
         .frame(width: 56, height: 56)
         .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
-
-    private var placeholder: some View {
-        LinearGradient(
-            colors: [DesignSystem.Colors.card, DesignSystem.Colors.backgroundNearBlack],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
-    }
 }
 
-#Preview {
+#Preview("Light Mode") {
     FavoritesView()
         .environmentObject(FavoritesStore())
-        .preferredColorScheme(.dark)
+        .environmentObject(ThemeManager(theme: .light))
+        .environment(\.colorScheme, .light)
+}
+
+#Preview("Dark Mode") {
+    FavoritesView()
+        .environmentObject(FavoritesStore())
+        .environmentObject(ThemeManager(theme: .dark))
+        .environment(\.colorScheme, .dark)
 }

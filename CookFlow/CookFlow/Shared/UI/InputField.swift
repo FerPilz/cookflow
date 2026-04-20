@@ -18,9 +18,15 @@ struct InputField: View {
                 .font(DesignSystem.Fonts.stepLabel)
                 .foregroundColor(DesignSystem.Colors.textMuted)
 
-            TextField(placeholder, text: $text)
+            TextField(
+                "",
+                text: $text,
+                prompt: Text(placeholder)
+                    .foregroundColor(DesignSystem.Colors.textCream.opacity(0.72))
+            )
                 .font(DesignSystem.Fonts.body)
-                .foregroundColor(DesignSystem.Colors.textCream)
+                .foregroundColor(.white)
+                .tint(.white)
                 .padding(DesignSystem.Spacing.md)
                 .background(DesignSystem.Colors.card)
                 .cornerRadius(DesignSystem.Radius.standard)

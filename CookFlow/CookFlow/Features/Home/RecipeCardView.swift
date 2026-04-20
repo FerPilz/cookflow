@@ -29,22 +29,22 @@ struct RecipeCardView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
+        VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
             ZStack(alignment: .topTrailing) {
                 imageLayer
-                    .frame(height: height)
-                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous))
+                    .frame(width: cardWidth, height: height)
+                    .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.imageCard, style: .continuous))
 
                 Button(action: onToggleFavorite) {
                     Image(systemName: isFavorite ? "heart.fill" : "heart")
-                        .font(.system(size: 18, weight: .semibold))
+                        .font(.system(size: 14, weight: .semibold))
                         .foregroundColor(DesignSystem.Colors.textCream)
-                        .frame(width: 44, height: 44)
+                        .frame(width: 32, height: 32)
                         .background(Color.black.opacity(0.35))
                         .clipShape(Circle())
                 }
                 .buttonStyle(.plain)
-                .padding(8)
+                .padding(10)
             }
 
             Text(recipe.title)
@@ -52,54 +52,19 @@ struct RecipeCardView: View {
                 .foregroundColor(DesignSystem.Colors.textCream)
                 .lineLimit(2)
 
-            Text(recipe.subtitle)
-                .font(DesignSystem.Fonts.valueProp)
-                .foregroundColor(DesignSystem.Colors.textMuted)
-                .lineLimit(1)
-
-            if let metadata = metadataText {
-                Text(metadata)
-                    .font(DesignSystem.Fonts.valueProp)
-                    .foregroundColor(DesignSystem.Colors.textCream)
-            }
+            RecipeMetadataRow(recipe: recipe)
         }
-        .frame(width: width)
-    }
-
-    private var metadataText: String? {
-        var parts: [String] = []
-        if let duration = recipe.durationMinutes {
-            parts.append("\(duration)m")
-        }
-        if let likes = recipe.likes {
-            parts.append("\(likes) likes")
-        }
-        return parts.isEmpty ? nil : parts.joined(separator: " · ")
+        .frame(width: cardWidth, alignment: .leading)
+        .contentShape(Rectangle())
     }
 
     @ViewBuilder
     private var imageLayer: some View {
-        if let url = recipe.imageURL {
-            AsyncImage(url: url) { phase in
-                if let image = phase.image {
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } else {
-                    placeholder
-                }
-            }
-        } else {
-            placeholder
-        }
+        HeroImageView(imageName: recipe.heroImageName, contentMode: .fill)
     }
 
-    private var placeholder: some View {
-        LinearGradient(
-            colors: [DesignSystem.Colors.card, DesignSystem.Colors.backgroundNearBlack],
-            startPoint: .topLeading,
-            endPoint: .bottomTrailing
-        )
+    private var cardWidth: CGFloat {
+        width ?? 200
     }
 }
 

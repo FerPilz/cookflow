@@ -11,28 +11,22 @@ struct WelcomeView: View {
     let name: String
 
     var body: some View {
-        VStack(spacing: DesignSystem.Spacing.md) {
-            Text("WELCOME")
+        VStack(spacing: 0) {
+            Spacer(minLength: 0)
+
+            Text("Welcome to CookFlow 1.0")
                 .font(DesignSystem.Fonts.screenTitle)
                 .foregroundColor(DesignSystem.Colors.textCream)
                 .multilineTextAlignment(.center)
+            .padding(.horizontal, DesignSystem.Spacing.xl)
 
-            Text(name.isEmpty ? "CookFlow" : name)
-                .font(DesignSystem.Fonts.heroTitle)
-                .foregroundColor(DesignSystem.Colors.textCream)
-                .multilineTextAlignment(.center)
-
-            Text("YOUR PERSONALIZED COOKBOOK IS READY!")
-                .font(DesignSystem.Fonts.subtitle)
-                .foregroundColor(DesignSystem.Colors.textMuted)
-                .multilineTextAlignment(.center)
+            Spacer(minLength: 0)
         }
-        .padding(.horizontal, DesignSystem.Spacing.xl)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
 #Preview {
-    WelcomeView(name: "Gaby")
+    WelcomeView(name: "")
         .preferredColorScheme(.dark)
-    
 }

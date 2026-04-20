@@ -9,63 +9,81 @@ import SwiftUI
 
 struct ProfileView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var themeManager: ThemeManager
     @AppStorage("userName") private var userName = "Gaby Pilz"
     @AppStorage("userEmail") private var userEmail = "gaby@cookflow.app"
-    @State private var showPaywall = false
 
     var body: some View {
+        let colors = themeManager.palette
+
         NavigationStack {
             VStack(spacing: DesignSystem.Spacing.lg) {
                 VStack(spacing: DesignSystem.Spacing.sm) {
                     Image(systemName: "person.crop.circle")
                         .font(.system(size: 64, weight: .regular))
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(colors.primaryText)
 
                     Text(userName)
                         .font(DesignSystem.Fonts.screenTitle)
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(colors.primaryText)
 
                     Text(userEmail)
                         .font(DesignSystem.Fonts.subtitle)
-                        .foregroundColor(DesignSystem.Colors.textMuted)
+                        .foregroundColor(colors.secondaryText)
                 }
 
                 VStack(spacing: DesignSystem.Spacing.sm) {
                     Text("Subscription: Free")
                         .font(DesignSystem.Fonts.valueProp)
-                        .foregroundColor(DesignSystem.Colors.textMuted)
+                        .foregroundColor(colors.secondaryText)
 
                     PrimaryButton(title: "Upgrade to Premium") {
-                        showPaywall = true
                     }
 
                     Button(action: {}) {
                         Text("Restore Purchases")
                             .font(DesignSystem.Fonts.link)
-                            .foregroundColor(DesignSystem.Colors.textCream)
+                            .foregroundColor(colors.primaryText)
                     }
                     .buttonStyle(.plain)
                 }
 
+                VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
+                    Text("Appearance")
+                        .font(DesignSystem.Fonts.subtitle)
+                        .foregroundColor(colors.primaryText)
+
+                    Picker("Theme", selection: $themeManager.selectedTheme) {
+                        ForEach(AppTheme.allCases) { theme in
+                            Text(theme.title).tag(theme)
+                        }
+                    }
+                    .pickerStyle(.segmented)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(DesignSystem.Spacing.md)
+                .background(colors.cardBackground)
+                .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous))
+
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.xs) {
                     Text("Preferences")
                         .font(DesignSystem.Fonts.subtitle)
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(colors.primaryText)
 
                     Text("Diet: Balanced")
                         .font(DesignSystem.Fonts.valueProp)
-                        .foregroundColor(DesignSystem.Colors.textMuted)
+                        .foregroundColor(colors.secondaryText)
 
                     Text("Goal: Quick weeknights")
                         .font(DesignSystem.Fonts.valueProp)
-                        .foregroundColor(DesignSystem.Colors.textMuted)
+                        .foregroundColor(colors.secondaryText)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 Spacer()
             }
             .padding(DesignSystem.Spacing.lg)
-            .background(DesignSystem.Colors.backgroundNearBlack)
+            .background(colors.background)
             .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -73,17 +91,21 @@ struct ProfileView: View {
                     Button("Done") {
                         dismiss()
                     }
-                    .foregroundColor(DesignSystem.Colors.textCream)
+                    .foregroundColor(colors.primaryText)
                 }
             }
-        }
-        .sheet(isPresented: $showPaywall) {
-            PaywallView()
         }
     }
 }
 
-#Preview {
+#Preview("Light Mode") {
     ProfileView()
-        .preferredColorScheme(.dark)
+        .environmentObject(ThemeManager(theme: .light))
+        .environment(\.colorScheme, .light)
+}
+
+#Preview("Dark Mode") {
+    ProfileView()
+        .environmentObject(ThemeManager(theme: .dark))
+        .environment(\.colorScheme, .dark)
 }
