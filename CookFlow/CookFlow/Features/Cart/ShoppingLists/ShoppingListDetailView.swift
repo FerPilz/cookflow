@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct ShoppingListDetailView: View {
+    @EnvironmentObject private var themeManager: ThemeManager
     @EnvironmentObject private var shoppingListStore: ShoppingListStore
     private let suggestionSource = ShoppingSuggestionSource()
     @State private var isAddingInlineItem = false
@@ -10,6 +11,8 @@ struct ShoppingListDetailView: View {
     let listID: UUID
 
     var body: some View {
+        let colors = themeManager.palette
+
         Group {
             if let list = shoppingListStore.list(for: listID) {
                 VStack(spacing: 0) {
@@ -35,7 +38,7 @@ struct ShoppingListDetailView: View {
                                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.sm) {
                                     Text(group.title)
                                         .font(DesignSystem.Fonts.subtitle)
-                                        .foregroundColor(DesignSystem.Colors.textCream)
+                                        .foregroundColor(colors.primaryText)
 
                                     VStack(spacing: DesignSystem.Spacing.sm) {
                                         ForEach(group.items) { item in
@@ -61,7 +64,7 @@ struct ShoppingListDetailView: View {
                         .padding(.bottom, DesignSystem.Spacing.lg)
                     }
                 }
-                .background(DesignSystem.Colors.backgroundNearBlack)
+                .background(colors.background)
                 .navigationTitle(list.name)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
@@ -69,7 +72,7 @@ struct ShoppingListDetailView: View {
                         Button(action: beginInlineItem) {
                             Image(systemName: "plus")
                                 .font(.system(size: 16, weight: .semibold))
-                                .foregroundColor(DesignSystem.Colors.backgroundNearBlack)
+                                .foregroundColor(DesignSystem.Colors.onAccentText)
                                 .frame(width: 44, height: 44)
                                 .background(DesignSystem.Colors.ctaGreen)
                                 .clipShape(Circle())
@@ -86,13 +89,13 @@ struct ShoppingListDetailView: View {
 
                     Text("List not found")
                         .font(DesignSystem.Fonts.subtitle)
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(colors.primaryText)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                .background(DesignSystem.Colors.backgroundNearBlack)
+                .background(colors.background)
             }
         }
-        .tint(DesignSystem.Colors.textCream)
+        .tint(colors.primaryText)
     }
 
     private func listHeader(_ list: ShoppingList) -> some View {
@@ -165,6 +168,7 @@ struct ShoppingListDetailView: View {
     NavigationStack {
         ShoppingListDetailView(listID: UUID())
             .environmentObject(ShoppingListStore())
-            .preferredColorScheme(.dark)
+            .environmentObject(ThemeManager(theme: .light))
+            .preferredColorScheme(.light)
     }
 }

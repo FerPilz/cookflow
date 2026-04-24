@@ -28,7 +28,7 @@ struct HomeStickyHeaderView: View {
             .padding(.top, topInset + 3)
             .padding(.bottom, 6)
             .frame(height: HomeStickyHeaderView.baseHeight + topInset, alignment: .bottom)
-            .background(DesignSystem.Colors.backgroundNearBlack.opacity(0.92))
+            .background(DesignSystem.Colors.topBarBackground.opacity(0.96))
 
             Rectangle()
                 .fill(DesignSystem.Colors.divider)

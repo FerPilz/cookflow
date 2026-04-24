@@ -20,17 +20,17 @@ struct SearchBar: View {
         HStack(spacing: DesignSystem.Spacing.sm) {
             Image(systemName: "magnifyingglass")
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(DesignSystem.Colors.textCream.opacity(0.72))
+                .foregroundColor(DesignSystem.Colors.secondaryText.opacity(0.8))
 
             TextField(
                 "",
                 text: $text,
                 prompt: Text(placeholder)
-                    .foregroundColor(DesignSystem.Colors.textCream.opacity(0.72))
+                    .foregroundColor(DesignSystem.Colors.secondaryText.opacity(0.8))
             )
                 .font(DesignSystem.Fonts.subtitle)
-                .foregroundColor(.white)
-                .tint(.white)
+                .foregroundColor(DesignSystem.Colors.primaryText)
+                .tint(DesignSystem.Colors.accent)
                 .textInputAutocapitalization(.never)
                 .disableAutocorrection(true)
 
@@ -38,7 +38,7 @@ struct SearchBar: View {
                 Button(action: { text = "" }) {
                     Image(systemName: "xmark.circle.fill")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(DesignSystem.Colors.textCream.opacity(0.72))
+                        .foregroundColor(DesignSystem.Colors.secondaryText.opacity(0.8))
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Clear search")
@@ -50,7 +50,7 @@ struct SearchBar: View {
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous))
         .overlay(
             RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous)
-                .stroke(DesignSystem.Colors.textCream.opacity(0.12), lineWidth: 1)
+                .stroke(DesignSystem.Colors.divider, lineWidth: 1)
         )
     }
 }
@@ -58,6 +58,6 @@ struct SearchBar: View {
 #Preview {
     SearchBar(text: .constant(""))
         .padding()
-        .background(DesignSystem.Colors.backgroundNearBlack)
-        .preferredColorScheme(.dark)
+        .background(DesignSystem.Colors.background)
+        .preferredColorScheme(.light)
 }

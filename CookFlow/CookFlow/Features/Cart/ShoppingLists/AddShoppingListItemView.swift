@@ -2,6 +2,7 @@ import SwiftUI
 
 struct AddShoppingListItemView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var themeManager: ThemeManager
     @EnvironmentObject private var shoppingListStore: ShoppingListStore
 
     let listID: UUID
@@ -11,12 +12,14 @@ struct AddShoppingListItemView: View {
     @State private var shoppingCategory = "Other"
 
     var body: some View {
+        let colors = themeManager.palette
+
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
                     Text("Add Item")
                         .font(DesignSystem.Fonts.screenTitle)
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(colors.primaryText)
 
                     InputField(label: "Ingredient", placeholder: "Ingredient", text: $ingredientName)
 
@@ -33,7 +36,7 @@ struct AddShoppingListItemView: View {
                             }
                         }
                         .pickerStyle(.menu)
-                        .tint(DesignSystem.Colors.textCream)
+                        .tint(colors.primaryText)
                     }
 
                     PrimaryButton(title: "Add Item", isEnabled: isSaveEnabled) {
@@ -44,14 +47,14 @@ struct AddShoppingListItemView: View {
                 .padding(.top, DesignSystem.Spacing.md)
                 .padding(.bottom, DesignSystem.Spacing.lg)
             }
-            .background(DesignSystem.Colors.backgroundNearBlack)
+            .background(colors.background)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
                         dismiss()
                     }
-                    .foregroundColor(DesignSystem.Colors.textCream)
+                    .foregroundColor(colors.primaryText)
                 }
             }
         }
@@ -89,5 +92,6 @@ struct AddShoppingListItemView: View {
 #Preview {
     AddShoppingListItemView(listID: UUID())
         .environmentObject(ShoppingListStore())
-        .preferredColorScheme(.dark)
+        .environmentObject(ThemeManager(theme: .light))
+        .preferredColorScheme(.light)
 }

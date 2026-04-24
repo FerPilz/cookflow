@@ -36,7 +36,7 @@ struct AppLogoView: View {
 
 #Preview {
     ZStack {
-        DesignSystem.Colors.backgroundNearBlack
+        DesignSystem.Colors.background
         AppLogoView()
     }
 }

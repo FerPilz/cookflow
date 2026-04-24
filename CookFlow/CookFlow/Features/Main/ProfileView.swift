@@ -53,12 +53,9 @@ struct ProfileView: View {
                         .font(DesignSystem.Fonts.subtitle)
                         .foregroundColor(colors.primaryText)
 
-                    Picker("Theme", selection: $themeManager.selectedTheme) {
-                        ForEach(AppTheme.allCases) { theme in
-                            Text(theme.title).tag(theme)
-                        }
-                    }
-                    .pickerStyle(.segmented)
+                    Text("Light mode is the active app appearance for now.")
+                        .font(DesignSystem.Fonts.valueProp)
+                        .foregroundColor(colors.secondaryText)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(DesignSystem.Spacing.md)
@@ -102,10 +99,4 @@ struct ProfileView: View {
     ProfileView()
         .environmentObject(ThemeManager(theme: .light))
         .environment(\.colorScheme, .light)
-}
-
-#Preview("Dark Mode") {
-    ProfileView()
-        .environmentObject(ThemeManager(theme: .dark))
-        .environment(\.colorScheme, .dark)
 }

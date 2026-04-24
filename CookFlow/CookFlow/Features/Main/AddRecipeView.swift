@@ -11,6 +11,7 @@ import UIKit
 
 struct AddRecipeView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var themeManager: ThemeManager
     @ObservedObject var userRecipesStore: UserRecipesStore
 
     @State private var title = ""
@@ -26,6 +27,8 @@ struct AddRecipeView: View {
     private let suggestionSource = ShoppingSuggestionSource()
 
     var body: some View {
+        let colors = themeManager.palette
+
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.lg) {
@@ -42,11 +45,11 @@ struct AddRecipeView: View {
                 .padding(.horizontal, DesignSystem.Spacing.lg)
                 .padding(.vertical, DesignSystem.Spacing.md)
             }
-            .background(DesignSystem.Colors.backgroundNearBlack)
+            .background(colors.background)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button("Cancel") { dismiss() }
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(colors.primaryText)
                 }
 
                 ToolbarItem(placement: .topBarTrailing) {
@@ -57,8 +60,8 @@ struct AddRecipeView: View {
             }
             .navigationTitle("Add Recipe")
             .navigationBarTitleDisplayMode(.inline)
-            .toolbarBackground(DesignSystem.Colors.backgroundNearBlack, for: .navigationBar)
-            .toolbarColorScheme(.dark, for: .navigationBar)
+            .toolbarBackground(colors.topBarBackground, for: .navigationBar)
+            .toolbarColorScheme(.light, for: .navigationBar)
         }
         .sheet(isPresented: $isShowingCamera) {
             CameraImagePicker(sourceType: .camera) { image in
@@ -119,7 +122,7 @@ struct AddRecipeView: View {
                     Button(action: { selectedImageData = nil }) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.system(size: 20, weight: .semibold))
-                            .foregroundColor(DesignSystem.Colors.textCream)
+                            .foregroundColor(DesignSystem.Colors.primaryText)
                             .padding(10)
                     }
                     .buttonStyle(.plain)
@@ -195,7 +198,7 @@ struct AddRecipeView: View {
                         HStack {
                             Text(suggestion.name)
                                 .font(DesignSystem.Fonts.valueProp)
-                                .foregroundColor(DesignSystem.Colors.textCream)
+                                .foregroundColor(DesignSystem.Colors.primaryText)
                             Spacer()
                         }
                         .padding(.horizontal, DesignSystem.Spacing.md)
@@ -221,13 +224,14 @@ struct AddRecipeView: View {
     private func fieldLabel(_ text: String) -> some View {
         Text(text)
             .font(DesignSystem.Fonts.valueProp)
-            .foregroundColor(DesignSystem.Colors.textCream)
+            .foregroundColor(DesignSystem.Colors.primaryText)
     }
 
     private func textField(_ placeholder: String, text: Binding<String>) -> some View {
         TextField(placeholder, text: text)
             .font(DesignSystem.Fonts.subtitle)
-            .foregroundColor(DesignSystem.Colors.textCream)
+            .foregroundColor(DesignSystem.Colors.primaryText)
+            .tint(DesignSystem.Colors.accent)
             .padding(.horizontal, DesignSystem.Spacing.md)
             .frame(height: 52)
             .background(DesignSystem.Colors.card)
@@ -256,7 +260,8 @@ struct AddRecipeView: View {
                 }
             }
             .font(DesignSystem.Fonts.subtitle)
-            .foregroundColor(DesignSystem.Colors.textCream)
+            .foregroundColor(DesignSystem.Colors.primaryText)
+            .tint(DesignSystem.Colors.accent)
             .textInputAutocapitalization(.sentences)
             .padding(.horizontal, DesignSystem.Spacing.md)
             .padding(.vertical, 14)
@@ -355,5 +360,6 @@ struct AddRecipeView: View {
 
 #Preview {
     AddRecipeView(userRecipesStore: UserRecipesStore())
-        .preferredColorScheme(.dark)
+        .environmentObject(ThemeManager(theme: .light))
+        .preferredColorScheme(.light)
 }

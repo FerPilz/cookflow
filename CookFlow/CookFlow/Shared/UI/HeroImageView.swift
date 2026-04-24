@@ -21,7 +21,7 @@ struct HeroImageView: View {
                     .clipped()
             } else {
                 LinearGradient(
-                    colors: [DesignSystem.Colors.card, DesignSystem.Colors.backgroundNearBlack],
+                    colors: [DesignSystem.Colors.card, DesignSystem.Colors.secondaryBackground],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
@@ -47,6 +47,6 @@ struct HeroImageView: View {
         .frame(height: 180)
         .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous))
         .padding()
-        .background(DesignSystem.Colors.backgroundNearBlack)
-        .preferredColorScheme(.dark)
+        .background(DesignSystem.Colors.background)
+        .preferredColorScheme(.light)
 }

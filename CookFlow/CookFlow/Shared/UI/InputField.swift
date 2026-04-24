@@ -22,11 +22,11 @@ struct InputField: View {
                 "",
                 text: $text,
                 prompt: Text(placeholder)
-                    .foregroundColor(DesignSystem.Colors.textCream.opacity(0.72))
+                    .foregroundColor(DesignSystem.Colors.textMuted.opacity(0.8))
             )
                 .font(DesignSystem.Fonts.body)
-                .foregroundColor(.white)
-                .tint(.white)
+                .foregroundColor(DesignSystem.Colors.primaryText)
+                .tint(DesignSystem.Colors.accent)
                 .padding(DesignSystem.Spacing.md)
                 .background(DesignSystem.Colors.card)
                 .cornerRadius(DesignSystem.Radius.standard)
@@ -40,7 +40,7 @@ struct InputField: View {
 
 #Preview {
     ZStack {
-        DesignSystem.Colors.backgroundNearBlack
+        DesignSystem.Colors.background
         InputField(label: "Name", placeholder: "Your name", text: .constant(""))
             .padding(DesignSystem.Spacing.lg)
     }

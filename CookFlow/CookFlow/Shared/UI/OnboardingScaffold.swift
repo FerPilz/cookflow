@@ -63,7 +63,7 @@ struct OnboardingScaffold<HeaderContent: View, BodyContent: View, FooterAboveCon
 
                 if showsTopBanner {
                     colors.secondaryBackground
-                        .opacity(themeManager.selectedTheme == .night ? 0.56 : 0.42)
+                        .opacity(0.42)
                         .frame(height: headerHeight)
                         .frame(maxHeight: .infinity, alignment: .top)
                 }
@@ -103,15 +103,15 @@ struct OnboardingScaffold<HeaderContent: View, BodyContent: View, FooterAboveCon
 
                 LinearGradient(
                     colors: [
-                        colors.background.opacity(themeManager.selectedTheme == .night ? 0.55 : 0.3),
-                        colors.background.opacity(themeManager.selectedTheme == .night ? 0.82 : 0.5)
+                        colors.background.opacity(0.3),
+                        colors.background.opacity(0.5)
                     ],
                     startPoint: .top,
                     endPoint: .bottom
                 )
                 .ignoresSafeArea()
             }
-        } else if let uiImage = UIImage(named: "OnboardingBG1") {
+        } else if let uiImage = UIImage(named: "OnboardingBG1_test") {
             Image(uiImage: uiImage)
                 .resizable()
                 .scaledToFill()

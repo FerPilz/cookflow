@@ -834,7 +834,7 @@ private struct PlannerAddDishFlow: View {
             Button(action: { step = .recipes }) {
                 Text("Continue to recipes")
                     .font(.system(size: 15, weight: .semibold))
-                    .foregroundColor(DesignSystem.Colors.backgroundNearBlack)
+                    .foregroundColor(DesignSystem.Colors.onAccentText)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 12)
                     .background(DesignSystem.Colors.ctaGreen)
@@ -911,7 +911,7 @@ private struct PlannerAddDishFlow: View {
                 Button(action: { onConfirm(selectedRecipe) }) {
                     Text("Add to \(slot.title)")
                         .font(.system(size: 15, weight: .semibold))
-                        .foregroundColor(DesignSystem.Colors.backgroundNearBlack)
+                        .foregroundColor(DesignSystem.Colors.onAccentText)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 12)
                         .background(DesignSystem.Colors.ctaGreen)

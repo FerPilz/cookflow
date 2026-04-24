@@ -20,7 +20,7 @@ struct InlineShoppingItemDraftRowView: View {
                 Button(action: onSubmit) {
                     Image(systemName: "plus")
                         .font(.system(size: 14, weight: .semibold))
-                        .foregroundColor(DesignSystem.Colors.backgroundNearBlack)
+                        .foregroundColor(DesignSystem.Colors.onAccentText)
                         .frame(width: 32, height: 32)
                         .background(DesignSystem.Colors.ctaGreen)
                         .clipShape(Circle())
@@ -59,11 +59,11 @@ struct InlineShoppingItemDraftRowView: View {
             "",
             text: text,
             prompt: Text(placeholder)
-                .foregroundColor(DesignSystem.Colors.textCream.opacity(0.72))
+                .foregroundColor(DesignSystem.Colors.secondaryText.opacity(0.8))
         )
         .font(DesignSystem.Fonts.subtitle)
-        .foregroundColor(.white)
-        .tint(.white)
+        .foregroundColor(DesignSystem.Colors.primaryText)
+        .tint(DesignSystem.Colors.accent)
         .keyboardType(keyboardType)
         .textInputAutocapitalization(.words)
         .disableAutocorrection(true)

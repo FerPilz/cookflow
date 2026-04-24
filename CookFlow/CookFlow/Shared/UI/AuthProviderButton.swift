@@ -19,7 +19,7 @@ struct AuthProviderButton: View {
 
                 Text(title)
                     .font(DesignSystem.Fonts.link)
-                    .foregroundColor(DesignSystem.Colors.textCream)
+                    .foregroundColor(DesignSystem.Colors.primaryText)
 
                 Spacer(minLength: 0)
             }
@@ -42,7 +42,7 @@ struct AuthProviderButton: View {
         case .apple:
             Image(systemName: "applelogo")
                 .font(.system(size: 17, weight: .semibold))
-                .foregroundColor(DesignSystem.Colors.textCream)
+                .foregroundColor(DesignSystem.Colors.primaryText)
         case .google:
             if UIImage(named: "google_g") != nil {
                 Image("google_g")
@@ -57,9 +57,9 @@ struct AuthProviderButton: View {
             } else {
                 Text("G")
                     .font(.system(size: 15, weight: .bold))
-                    .foregroundColor(DesignSystem.Colors.textCream)
+                    .foregroundColor(DesignSystem.Colors.primaryText)
                     .frame(width: 20, height: 20)
-                    .background(DesignSystem.Colors.backgroundNearBlack)
+                    .background(DesignSystem.Colors.secondaryBackground)
                     .clipShape(Circle())
             }
         }
@@ -72,6 +72,6 @@ struct AuthProviderButton: View {
         AuthProviderButton(title: "Continue with Google", icon: .google, action: {})
     }
     .padding()
-    .background(DesignSystem.Colors.backgroundNearBlack)
-    .preferredColorScheme(.dark)
+    .background(DesignSystem.Colors.background)
+    .preferredColorScheme(.light)
 }

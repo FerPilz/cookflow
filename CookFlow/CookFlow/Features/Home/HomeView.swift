@@ -215,12 +215,3 @@ struct HomeView: View {
             .environment(\.colorScheme, .light)
     }
 }
-
-#Preview("Dark Mode") {
-    NavigationStack {
-        HomeView()
-            .environmentObject(FavoritesStore())
-            .environmentObject(ThemeManager(theme: .dark))
-            .environment(\.colorScheme, .dark)
-    }
-}

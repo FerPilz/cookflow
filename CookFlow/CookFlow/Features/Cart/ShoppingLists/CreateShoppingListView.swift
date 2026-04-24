@@ -2,6 +2,7 @@ import SwiftUI
 
 struct CreateShoppingListView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var themeManager: ThemeManager
     @EnvironmentObject private var shoppingListStore: ShoppingListStore
 
     var onSave: ((UUID) -> Void)?
@@ -11,12 +12,14 @@ struct CreateShoppingListView: View {
     @State private var draftItems: [DraftShoppingItem] = [DraftShoppingItem()]
 
     var body: some View {
+        let colors = themeManager.palette
+
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
                     Text("Shopping List")
                         .font(DesignSystem.Fonts.screenTitle)
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(colors.primaryText)
 
                     InputField(label: "Shopping List Name", placeholder: "Weekly groceries", text: $listName)
 
@@ -28,13 +31,13 @@ struct CreateShoppingListView: View {
                                 "",
                                 text: $item.name,
                                 prompt: Text("Item")
-                                    .foregroundColor(DesignSystem.Colors.textCream.opacity(0.72))
+                                    .foregroundColor(colors.secondaryText.opacity(0.8))
                             )
                                 .textInputAutocapitalization(.words)
                                 .disableAutocorrection(true)
                                 .font(DesignSystem.Fonts.subtitle)
-                                .foregroundColor(.white)
-                                .tint(.white)
+                                .foregroundColor(colors.primaryText)
+                                .tint(colors.accent)
                                 .padding(.vertical, 8)
                                 .padding(.horizontal, 10)
                                 .background(DesignSystem.Colors.card)
@@ -46,7 +49,7 @@ struct CreateShoppingListView: View {
                                 }
                             }
                             .pickerStyle(.menu)
-                            .tint(DesignSystem.Colors.textCream)
+                            .tint(colors.primaryText)
                             .frame(width: 64)
                             .padding(.vertical, 6)
                             .background(DesignSystem.Colors.card)
@@ -71,7 +74,7 @@ struct CreateShoppingListView: View {
                             Text("Add item")
                         }
                         .font(DesignSystem.Fonts.subtitle)
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(colors.primaryText)
                         .padding(.vertical, 8)
                         .padding(.horizontal, 12)
                         .background(DesignSystem.Colors.card)
@@ -87,14 +90,14 @@ struct CreateShoppingListView: View {
                 .padding(.top, DesignSystem.Spacing.md)
                 .padding(.bottom, DesignSystem.Spacing.lg)
             }
-            .background(DesignSystem.Colors.backgroundNearBlack)
+            .background(colors.background)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Close") {
                         dismiss()
                     }
-                    .foregroundColor(DesignSystem.Colors.textCream)
+                    .foregroundColor(colors.primaryText)
                 }
             }
         }
@@ -175,5 +178,6 @@ private struct DraftShoppingItem: Identifiable {
 #Preview {
     CreateShoppingListView()
         .environmentObject(ShoppingListStore())
-        .preferredColorScheme(.dark)
+        .environmentObject(ThemeManager(theme: .light))
+        .preferredColorScheme(.light)
 }

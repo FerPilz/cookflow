@@ -87,6 +87,6 @@ struct CategoryThumbnailView: View {
 #Preview {
     CategoryThumbnailView(imageName: nil, presentation: .circle)
         .padding()
-        .background(DesignSystem.Colors.backgroundNearBlack)
-        .preferredColorScheme(.dark)
+        .background(DesignSystem.Colors.background)
+        .preferredColorScheme(.light)
 }

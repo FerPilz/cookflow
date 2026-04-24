@@ -18,19 +18,20 @@ struct DSTextField: View {
             if text.isEmpty {
                 Text(placeholder)
                     .font(DesignSystem.Fonts.link)
-                    .foregroundColor(DesignSystem.Colors.textCream.opacity(0.7))
+                    .foregroundColor(DesignSystem.Colors.textMuted.opacity(0.8))
                     .lineLimit(1)
                     .padding(.horizontal, DesignSystem.Spacing.md)
             }
 
             TextField("", text: $text)
                 .font(DesignSystem.Fonts.link)
-                .foregroundColor(DesignSystem.Colors.textCream)
+                .foregroundColor(DesignSystem.Colors.primaryText)
                 .lineLimit(1)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled(true)
                 .keyboardType(.emailAddress)
                 .textContentType(.emailAddress)
+                .tint(DesignSystem.Colors.accent)
                 .focused($isFocused)
                 .padding(.horizontal, DesignSystem.Spacing.md)
         }
@@ -38,13 +39,13 @@ struct DSTextField: View {
     }
 
     private var borderColor: Color {
-        isFocused ? DesignSystem.Colors.ctaGreen : DesignSystem.Colors.textCream.opacity(0.5)
+        isFocused ? DesignSystem.Colors.ctaGreen : DesignSystem.Colors.divider
     }
 }
 
 #Preview {
     DSTextField(placeholder: "Continue with Email", text: .constant(""))
         .padding()
-        .background(DesignSystem.Colors.backgroundNearBlack)
-        .preferredColorScheme(.dark)
+        .background(DesignSystem.Colors.background)
+        .preferredColorScheme(.light)
 }

@@ -164,9 +164,3 @@ private struct UtilitySheetView: View {
         .environmentObject(ThemeManager(theme: .light))
         .environment(\.colorScheme, .light)
 }
-
-#Preview("Dark Mode") {
-    MenuView(isPresented: .constant(true), selectedTab: .constant(.home))
-        .environmentObject(ThemeManager(theme: .dark))
-        .environment(\.colorScheme, .dark)
-}

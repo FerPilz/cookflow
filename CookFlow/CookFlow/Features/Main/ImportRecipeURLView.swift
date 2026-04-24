@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ImportRecipeURLView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var themeManager: ThemeManager
     @ObservedObject var userRecipesStore: UserRecipesStore
 
     @State private var urlText = ""
@@ -13,12 +14,14 @@ struct ImportRecipeURLView: View {
     private let importService = RecipeImportService()
 
     var body: some View {
+        let colors = themeManager.palette
+
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.md) {
                     Text("Import Recipe URL")
                         .font(DesignSystem.Fonts.screenTitle)
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(colors.primaryText)
 
                     urlField(label: "Recipe URL", placeholder: "https://example.com/recipe", text: $urlText)
 
@@ -34,7 +37,7 @@ struct ImportRecipeURLView: View {
                                 .tint(DesignSystem.Colors.ctaGreen)
                             Text("Importing recipe...")
                                 .font(DesignSystem.Fonts.valueProp)
-                                .foregroundColor(DesignSystem.Colors.textMuted)
+                                .foregroundColor(colors.secondaryText)
                         }
                     }
 
@@ -46,14 +49,14 @@ struct ImportRecipeURLView: View {
                 .padding(.top, DesignSystem.Spacing.md)
                 .padding(.bottom, DesignSystem.Spacing.lg)
             }
-            .background(DesignSystem.Colors.backgroundNearBlack)
+            .background(colors.background)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Close") {
                         dismiss()
                     }
-                    .foregroundColor(DesignSystem.Colors.textCream)
+                    .foregroundColor(colors.primaryText)
                 }
             }
             .navigationDestination(isPresented: $showRecipeDetail) {
@@ -79,10 +82,11 @@ struct ImportRecipeURLView: View {
 
             TextField(placeholder, text: text)
                 .font(DesignSystem.Fonts.body)
-                .foregroundColor(DesignSystem.Colors.textCream)
+                .foregroundColor(DesignSystem.Colors.primaryText)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled(true)
                 .keyboardType(.URL)
+                .tint(DesignSystem.Colors.accent)
                 .padding(DesignSystem.Spacing.md)
                 .background(DesignSystem.Colors.card)
                 .cornerRadius(DesignSystem.Radius.standard)
@@ -118,5 +122,6 @@ struct ImportRecipeURLView: View {
 
 #Preview {
     ImportRecipeURLView(userRecipesStore: UserRecipesStore())
-        .preferredColorScheme(.dark)
+        .environmentObject(ThemeManager(theme: .light))
+        .preferredColorScheme(.light)
 }

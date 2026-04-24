@@ -146,9 +146,3 @@ struct AppShellView: View {
         .environmentObject(ThemeManager(theme: .light))
         .environment(\.colorScheme, .light)
 }
-
-#Preview("Root Dark") {
-    AppShellView()
-        .environmentObject(ThemeManager(theme: .dark))
-        .environment(\.colorScheme, .dark)
-}

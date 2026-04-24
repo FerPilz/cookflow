@@ -6,44 +6,54 @@
 //
 
 import SwiftUI
+import UIKit
 
 struct ThemePalette {
-    let background: Color
-    let secondaryBackground: Color
-    let cardBackground: Color
-    let primaryText: Color
-    let secondaryText: Color
-    let tertiaryText: Color
-    let accent: Color
-    let border: Color
-    let topBarBackground: Color
-    let tabBarBackground: Color
+    let backgroundHex: UInt32
+    let secondaryBackgroundHex: UInt32
+    let cardBackgroundHex: UInt32
+    let primaryTextHex: UInt32
+    let secondaryTextHex: UInt32
+    let tertiaryTextHex: UInt32
+    let accentHex: UInt32
+    let borderHex: UInt32
+    let topBarBackgroundHex: UInt32
+    let tabBarBackgroundHex: UInt32
+    let onAccentTextHex: UInt32
+
+    var background: Color { Color(themeHex: backgroundHex) }
+    var secondaryBackground: Color { Color(themeHex: secondaryBackgroundHex) }
+    var cardBackground: Color { Color(themeHex: cardBackgroundHex) }
+    var primaryText: Color { Color(themeHex: primaryTextHex) }
+    var secondaryText: Color { Color(themeHex: secondaryTextHex) }
+    var tertiaryText: Color { Color(themeHex: tertiaryTextHex) }
+    var accent: Color { Color(themeHex: accentHex) }
+    var border: Color { Color(themeHex: borderHex) }
+    var topBarBackground: Color { Color(themeHex: topBarBackgroundHex) }
+    var tabBarBackground: Color { Color(themeHex: tabBarBackgroundHex) }
+    var onAccentText: Color { Color(themeHex: onAccentTextHex) }
 
     static let day = ThemePalette(
-        background: Color(themeHex: 0xF5F1E8),
-        secondaryBackground: Color(themeHex: 0xECE4D6),
-        cardBackground: Color(themeHex: 0xFFFCF7),
-        primaryText: Color(themeHex: 0x251F18),
-        secondaryText: Color(themeHex: 0x6D6357),
-        tertiaryText: Color(themeHex: 0x978B7C),
-        accent: Color(themeHex: 0x2CCB6F),
-        border: Color(themeHex: 0xD9D0C0),
-        topBarBackground: Color(themeHex: 0xF8F4EC),
-        tabBarBackground: Color(themeHex: 0xF8F4EC)
+        backgroundHex: 0xF7F2E8,
+        secondaryBackgroundHex: 0xEFE7DA,
+        cardBackgroundHex: 0xFFFBF4,
+        primaryTextHex: 0x171411,
+        secondaryTextHex: 0x655C52,
+        tertiaryTextHex: 0x94897B,
+        accentHex: 0x2CCB6F,
+        borderHex: 0xDCD2C2,
+        topBarBackgroundHex: 0xFBF6EE,
+        tabBarBackgroundHex: 0xFBF6EE,
+        onAccentTextHex: 0x0B0B0C
     )
 
-    static let night = ThemePalette(
-        background: Color(themeHex: 0x0B0B0C),
-        secondaryBackground: Color(themeHex: 0x111214),
-        cardBackground: Color(themeHex: 0x141416),
-        primaryText: Color(themeHex: 0xF2EBDD),
-        secondaryText: Color(themeHex: 0xD3C8B8),
-        tertiaryText: Color(themeHex: 0xA59A8C),
-        accent: Color(themeHex: 0x2CCB6F),
-        border: Color(themeHex: 0x242428),
-        topBarBackground: Color(themeHex: 0x0E0E10),
-        tabBarBackground: Color(themeHex: 0x0E0E10)
-    )
+    static func palette(for colorScheme: ColorScheme) -> ThemePalette {
+        .day
+    }
+
+    static func palette(for interfaceStyle: UIUserInterfaceStyle) -> ThemePalette {
+        .day
+    }
 }
 
 extension Color {
@@ -52,5 +62,14 @@ extension Color {
         let green = Double((themeHex >> 8) & 0xFF) / 255.0
         let blue = Double(themeHex & 0xFF) / 255.0
         self = Color(.sRGB, red: red, green: green, blue: blue, opacity: 1.0)
+    }
+}
+
+extension UIColor {
+    convenience init(themeHex: UInt32) {
+        let red = CGFloat((themeHex >> 16) & 0xFF) / 255.0
+        let green = CGFloat((themeHex >> 8) & 0xFF) / 255.0
+        let blue = CGFloat(themeHex & 0xFF) / 255.0
+        self.init(red: red, green: green, blue: blue, alpha: 1.0)
     }
 }

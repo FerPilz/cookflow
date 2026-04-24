@@ -3,6 +3,7 @@ import UIKit
 
 struct ShoppingItemEditorView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var themeManager: ThemeManager
 
     let title: String
     let initialItem: ShoppingItem?
@@ -37,12 +38,14 @@ struct ShoppingItemEditorView: View {
     }
 
     var body: some View {
+        let colors = themeManager.palette
+
         NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: DesignSystem.Spacing.lg) {
                     Text(title)
                         .font(DesignSystem.Fonts.screenTitle)
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(colors.primaryText)
 
                     editorField(label: "Item", placeholder: "Olive oil", text: $name, keyboardType: .default)
 
@@ -65,14 +68,14 @@ struct ShoppingItemEditorView: View {
                 .padding(.top, DesignSystem.Spacing.md)
                 .padding(.bottom, DesignSystem.Spacing.lg)
             }
-            .background(DesignSystem.Colors.backgroundNearBlack)
+            .background(colors.background)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
                         dismiss()
                     }
-                    .foregroundColor(DesignSystem.Colors.textCream)
+                    .foregroundColor(colors.primaryText)
                 }
             }
         }
@@ -91,7 +94,7 @@ struct ShoppingItemEditorView: View {
                     HStack {
                         Text(suggestion.name)
                             .font(DesignSystem.Fonts.subtitle)
-                            .foregroundColor(DesignSystem.Colors.textCream)
+                            .foregroundColor(themeManager.palette.primaryText)
 
                         Spacer()
                     }
@@ -128,9 +131,9 @@ struct ShoppingItemEditorView: View {
                     .foregroundColor(DesignSystem.Colors.textMuted.opacity(0.9))
             )
             .font(DesignSystem.Fonts.body)
-            .foregroundColor(.white)
+            .foregroundColor(DesignSystem.Colors.primaryText)
             .keyboardType(keyboardType)
-            .tint(.white)
+            .tint(DesignSystem.Colors.accent)
             .padding(DesignSystem.Spacing.md)
             .background(DesignSystem.Colors.card)
             .clipShape(RoundedRectangle(cornerRadius: DesignSystem.Radius.standard, style: .continuous))
@@ -155,9 +158,9 @@ struct ShoppingItemEditorView: View {
                     .foregroundColor(DesignSystem.Colors.textMuted.opacity(0.9))
             )
                 .font(DesignSystem.Fonts.subtitle)
-                .foregroundColor(.white)
+                .foregroundColor(DesignSystem.Colors.primaryText)
                 .keyboardType(keyboardType)
-                .tint(.white)
+                .tint(DesignSystem.Colors.accent)
                 .padding(.horizontal, DesignSystem.Spacing.md)
                 .padding(.vertical, 14)
                 .background(DesignSystem.Colors.card)
@@ -203,5 +206,6 @@ struct ShoppingItemEditorView: View {
 
 #Preview {
     ShoppingItemEditorView(title: "Edit Item", initialItem: ShoppingItem(name: "Lemons", quantity: 3, unit: "pcs", category: "Produce", isManualItem: true)) { _ in }
-        .preferredColorScheme(.dark)
+        .environmentObject(ThemeManager(theme: .light))
+        .preferredColorScheme(.light)
 }

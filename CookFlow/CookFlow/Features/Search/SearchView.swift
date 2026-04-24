@@ -348,12 +348,3 @@ private extension Array {
             .environment(\.colorScheme, .light)
     }
 }
-
-#Preview("Dark Mode") {
-    NavigationStack {
-        SearchView()
-            .environmentObject(FavoritesStore())
-            .environmentObject(ThemeManager(theme: .dark))
-            .environment(\.colorScheme, .dark)
-    }
-}

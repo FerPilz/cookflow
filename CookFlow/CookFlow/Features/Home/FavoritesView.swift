@@ -105,10 +105,3 @@ private struct RecipeThumbView: View {
         .environmentObject(ThemeManager(theme: .light))
         .environment(\.colorScheme, .light)
 }
-
-#Preview("Dark Mode") {
-    FavoritesView()
-        .environmentObject(FavoritesStore())
-        .environmentObject(ThemeManager(theme: .dark))
-        .environment(\.colorScheme, .dark)
-}

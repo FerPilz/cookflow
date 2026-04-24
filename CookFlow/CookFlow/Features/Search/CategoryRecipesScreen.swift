@@ -9,6 +9,7 @@ import SwiftUI
 
 struct CategoryRecipesScreen: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var themeManager: ThemeManager
     private let title: String
     private let builtInRecipes: [Recipe]
     private let userRecipeFilter: ((Recipe) -> Bool)?
@@ -46,12 +47,14 @@ struct CategoryRecipesScreen: View {
     }
 
     var body: some View {
+        let colors = themeManager.palette
+
         VStack(spacing: 0) {
             HStack(spacing: DesignSystem.Spacing.sm) {
                 Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 16, weight: .semibold))
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(colors.primaryText)
                         .frame(width: 32, height: 32)
                         .background(DesignSystem.Colors.card)
                         .clipShape(Circle())
@@ -60,7 +63,7 @@ struct CategoryRecipesScreen: View {
 
                 Text(title)
                     .font(DesignSystem.Fonts.screenTitle)
-                    .foregroundColor(DesignSystem.Colors.textCream)
+                    .foregroundColor(colors.primaryText)
                     .lineLimit(1)
 
                 Spacer()
@@ -68,7 +71,7 @@ struct CategoryRecipesScreen: View {
             .padding(.horizontal, DesignSystem.Spacing.lg)
             .padding(.top, DesignSystem.Spacing.sm)
             .padding(.bottom, DesignSystem.Spacing.sm)
-            .background(DesignSystem.Colors.backgroundNearBlack)
+            .background(colors.topBarBackground)
             .zIndex(1)
 
             ScrollView {
@@ -82,7 +85,7 @@ struct CategoryRecipesScreen: View {
                 .padding(.bottom, 96)
             }
         }
-        .background(DesignSystem.Colors.backgroundNearBlack)
+        .background(colors.background)
         .toolbar(.hidden, for: .navigationBar)
     }
 
@@ -118,5 +121,6 @@ struct CategoryRecipesScreen: View {
         CategoryRecipesScreen(category: .vegan, userRecipesStore: UserRecipesStore(), onSelectRecipe: nil)
     }
     .environmentObject(FavoritesStore())
-    .preferredColorScheme(.dark)
+    .environmentObject(ThemeManager(theme: .light))
+    .preferredColorScheme(.light)
 }

@@ -6,19 +6,21 @@
 //
 
 import SwiftUI
+import UIKit
 
 enum DesignSystem {
     enum Colors {
-        static var background: Color { ThemeRegistry.palette.background }
-        static var secondaryBackground: Color { ThemeRegistry.palette.secondaryBackground }
-        static var cardBackground: Color { ThemeRegistry.palette.cardBackground }
-        static var primaryText: Color { ThemeRegistry.palette.primaryText }
-        static var secondaryText: Color { ThemeRegistry.palette.secondaryText }
-        static var tertiaryText: Color { ThemeRegistry.palette.tertiaryText }
-        static var accent: Color { ThemeRegistry.palette.accent }
-        static var border: Color { ThemeRegistry.palette.border }
-        static var topBarBackground: Color { ThemeRegistry.palette.topBarBackground }
-        static var tabBarBackground: Color { ThemeRegistry.palette.tabBarBackground }
+        static var background: Color { dynamicColor(\.backgroundHex) }
+        static var secondaryBackground: Color { dynamicColor(\.secondaryBackgroundHex) }
+        static var cardBackground: Color { dynamicColor(\.cardBackgroundHex) }
+        static var primaryText: Color { dynamicColor(\.primaryTextHex) }
+        static var secondaryText: Color { dynamicColor(\.secondaryTextHex) }
+        static var tertiaryText: Color { dynamicColor(\.tertiaryTextHex) }
+        static var accent: Color { dynamicColor(\.accentHex) }
+        static var border: Color { dynamicColor(\.borderHex) }
+        static var topBarBackground: Color { dynamicColor(\.topBarBackgroundHex) }
+        static var tabBarBackground: Color { dynamicColor(\.tabBarBackgroundHex) }
+        static var onAccentText: Color { dynamicColor(\.onAccentTextHex) }
 
         static var backgroundNearBlack: Color { background }
         static var textCream: Color { primaryText }
@@ -33,13 +35,29 @@ enum DesignSystem {
         static let selectorBlueHighlight = Color(red: 0.45, green: 0.71, blue: 0.97)
         static let plannerSelectionBlue = Color(red: 0.33, green: 0.61, blue: 0.96)
         static let plannerCaloriesRed = Color(red: 0.92, green: 0.35, blue: 0.33)
-        static let plannerRowMonday = Color(red: 0.25, green: 0.25, blue: 0.27)
-        static let plannerRowTuesday = Color(red: 0.22, green: 0.22, blue: 0.24)
-        static let plannerRowWednesday = Color(red: 0.20, green: 0.20, blue: 0.22)
-        static let plannerRowThursday = Color(red: 0.18, green: 0.18, blue: 0.20)
-        static let plannerRowFriday = Color(red: 0.16, green: 0.16, blue: 0.18)
-        static let plannerRowSaturday = Color(red: 0.14, green: 0.14, blue: 0.16)
-        static let plannerRowSunday = Color(red: 0.12, green: 0.12, blue: 0.14)
+        static var plannerRowMonday: Color { dynamicColor(light: 0xF1E9DC, dark: 0x403F45) }
+        static var plannerRowTuesday: Color { dynamicColor(light: 0xEEE4D4, dark: 0x38383D) }
+        static var plannerRowWednesday: Color { dynamicColor(light: 0xECE1D0, dark: 0x333338) }
+        static var plannerRowThursday: Color { dynamicColor(light: 0xE9DECC, dark: 0x2E2E33) }
+        static var plannerRowFriday: Color { dynamicColor(light: 0xE7DBC8, dark: 0x29292E) }
+        static var plannerRowSaturday: Color { dynamicColor(light: 0xE4D8C3, dark: 0x252529) }
+        static var plannerRowSunday: Color { dynamicColor(light: 0xE1D4BE, dark: 0x212125) }
+
+        private static func dynamicColor(_ keyPath: KeyPath<ThemePalette, UInt32>) -> Color {
+            Color(
+                uiColor: UIColor { traits in
+                    UIColor(themeHex: ThemePalette.palette(for: traits.userInterfaceStyle)[keyPath: keyPath])
+                }
+            )
+        }
+
+        private static func dynamicColor(light: UInt32, dark: UInt32) -> Color {
+            Color(
+                uiColor: UIColor { traits in
+                    UIColor(themeHex: traits.userInterfaceStyle == .dark ? dark : light)
+                }
+            )
+        }
     }
 
     enum Spacing {

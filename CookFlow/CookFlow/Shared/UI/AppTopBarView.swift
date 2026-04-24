@@ -96,7 +96,7 @@ private struct CartIconButton: View {
                 if badgeCount > 0 {
                     Text(badgeText)
                         .font(.system(size: 10, weight: .bold))
-                        .foregroundColor(colors.background)
+                        .foregroundColor(DesignSystem.Colors.onAccentText)
                         .padding(.horizontal, 5)
                         .padding(.vertical, 2)
                         .background(colors.accent)

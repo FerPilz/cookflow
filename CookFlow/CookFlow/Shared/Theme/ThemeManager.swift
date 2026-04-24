@@ -8,10 +8,6 @@
 import SwiftUI
 import Combine
 
-enum ThemeRegistry {
-    static var palette: ThemePalette = .night
-}
-
 final class ThemeManager: ObservableObject {
     private enum StorageKey {
         static let selectedTheme = "selectedAppTheme"
@@ -19,45 +15,31 @@ final class ThemeManager: ObservableObject {
 
     @Published var selectedTheme: AppTheme {
         didSet {
-            ThemeRegistry.palette = palette
             UserDefaults.standard.set(selectedTheme.rawValue, forKey: StorageKey.selectedTheme)
         }
     }
 
-    @Published private var systemColorScheme: ColorScheme = .dark
+    @Published private var systemColorScheme: ColorScheme = .light
 
     var palette: ThemePalette {
-        switch selectedTheme {
-        case .day:
-            return .day
-        case .night:
-            return .night
-        case .system:
-            return systemColorScheme == .dark ? .night : .day
-        }
+        .day
     }
 
     var preferredColorScheme: ColorScheme? {
-        selectedTheme.preferredColorScheme
+        .light
     }
 
     init() {
-        let storedTheme = UserDefaults.standard.string(forKey: StorageKey.selectedTheme)
-            .flatMap(AppTheme.init(rawValue:))
-            ?? .night
-        selectedTheme = storedTheme
-        ThemeRegistry.palette = palette
+        selectedTheme = .day
+        UserDefaults.standard.set(AppTheme.day.rawValue, forKey: StorageKey.selectedTheme)
     }
 
     init(theme colorScheme: ColorScheme) {
-        selectedTheme = colorScheme == .dark ? .night : .day
-        systemColorScheme = colorScheme
-        ThemeRegistry.palette = palette
+        selectedTheme = .day
+        systemColorScheme = .light
     }
 
     func updateSystemColorScheme(_ colorScheme: ColorScheme) {
-        guard systemColorScheme != colorScheme else { return }
-        systemColorScheme = colorScheme
-        ThemeRegistry.palette = palette
+        systemColorScheme = .light
     }
 }

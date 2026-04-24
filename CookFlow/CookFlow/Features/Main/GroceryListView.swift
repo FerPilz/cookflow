@@ -149,7 +149,7 @@ struct CartView: View {
                 Button(action: openShoppingListAction) {
                     Text("+ Shopping List")
                         .font(DesignSystem.Fonts.valueProp)
-                        .foregroundColor(DesignSystem.Colors.backgroundNearBlack)
+                        .foregroundColor(DesignSystem.Colors.onAccentText)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 14)
                         .background(DesignSystem.Colors.ctaGreen)
@@ -225,12 +225,4 @@ struct CartView: View {
         .environmentObject(ShoppingListStore())
         .environmentObject(ThemeManager(theme: .light))
         .environment(\.colorScheme, .light)
-}
-
-#Preview("Dark Mode") {
-    CartView()
-        .environmentObject(CartStore())
-        .environmentObject(ShoppingListStore())
-        .environmentObject(ThemeManager(theme: .dark))
-        .environment(\.colorScheme, .dark)
 }

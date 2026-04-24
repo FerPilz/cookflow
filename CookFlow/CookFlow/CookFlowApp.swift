@@ -20,7 +20,7 @@ struct CookFlowApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(themeManager)
-                .preferredColorScheme(themeManager.preferredColorScheme)
+                .preferredColorScheme(.light)
                 .onOpenURL { url in
                     #if canImport(GoogleSignIn)
                     _ = GIDSignIn.sharedInstance.handle(url)

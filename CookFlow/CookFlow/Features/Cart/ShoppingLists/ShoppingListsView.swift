@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ShoppingListsView: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var themeManager: ThemeManager
     @EnvironmentObject private var shoppingListStore: ShoppingListStore
     @State private var isCreateListPresented = false
     @State private var createdListID: UUID?
@@ -14,6 +15,8 @@ struct ShoppingListsView: View {
     }()
 
     var body: some View {
+        let colors = themeManager.palette
+
         Group {
             if shoppingListStore.lists.isEmpty {
                 VStack(spacing: DesignSystem.Spacing.md) {
@@ -28,7 +31,7 @@ struct ShoppingListsView: View {
                     Button(action: { isCreateListPresented = true }) {
                         Text("Create Shopping List")
                             .font(DesignSystem.Fonts.valueProp)
-                            .foregroundColor(DesignSystem.Colors.backgroundNearBlack)
+                            .foregroundColor(DesignSystem.Colors.onAccentText)
                             .padding(.horizontal, DesignSystem.Spacing.md)
                             .padding(.vertical, 12)
                             .background(DesignSystem.Colors.ctaGreen)
@@ -37,7 +40,7 @@ struct ShoppingListsView: View {
                     .buttonStyle(.plain)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(DesignSystem.Colors.backgroundNearBlack)
+                .background(colors.background)
             } else {
                 List {
                     ForEach(shoppingListStore.lists, id: \.id) { list in
@@ -64,7 +67,7 @@ struct ShoppingListsView: View {
                 }
                 .listStyle(.insetGrouped)
                 .scrollContentBackground(.hidden)
-                .background(DesignSystem.Colors.backgroundNearBlack)
+                .background(colors.background)
             }
         }
         .navigationTitle("Shopping Lists")
@@ -93,7 +96,7 @@ struct ShoppingListsView: View {
                 Button(action: { dismiss() }) {
                     Image(systemName: "chevron.left")
                         .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(colors.primaryText)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Back")
@@ -103,13 +106,14 @@ struct ShoppingListsView: View {
                 Button(action: { isCreateListPresented = true }) {
                     Image(systemName: "plus")
                         .font(.system(size: 17, weight: .semibold))
-                        .foregroundColor(DesignSystem.Colors.textCream)
+                        .foregroundColor(colors.primaryText)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Create shopping list")
             }
         }
-        .tint(DesignSystem.Colors.textCream)
+        .background(colors.background)
+        .tint(colors.primaryText)
     }
 }
 
@@ -117,6 +121,7 @@ struct ShoppingListsView: View {
     NavigationStack {
         ShoppingListsView()
             .environmentObject(ShoppingListStore())
-            .preferredColorScheme(.dark)
+            .environmentObject(ThemeManager(theme: .light))
+            .preferredColorScheme(.light)
     }
 }
